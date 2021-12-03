@@ -1,5 +1,7 @@
 {
     "name": "b2pweb/bdf-form-attribute",
+    "description": "Declaring forms using PHP 8 attributes and typed properties, over bdf-form",
+    "keywords": ["attributes", "PHP 8", "form", "validator"],
     "authors": [
         {
             "name": "Vincent Quatrevieux",
