@@ -40,14 +40,14 @@ class Satisfy implements ChildBuilderAttributeInterface
          * @var class-string<Constraint>
          */
         public string $constraint,
-
         /**
          * Constraint's constructor options
          *
          * @var array|null|string
          */
         public mixed $options = null
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

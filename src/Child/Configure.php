@@ -39,7 +39,8 @@ class Configure implements ChildBuilderAttributeInterface
          * @var literal-string
          */
         public string $callback
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

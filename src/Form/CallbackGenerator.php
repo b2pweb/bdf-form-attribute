@@ -43,7 +43,8 @@ final class CallbackGenerator implements FormBuilderAttributeInterface
          * `public function (FormInterface $form): mixed`
          */
         public string $callback,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

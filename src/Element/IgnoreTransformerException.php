@@ -43,7 +43,8 @@ final class IgnoreTransformerException implements ChildBuilderAttributeInterface
          * Ignore or not transformer errors
          */
         public bool $ignore = true,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

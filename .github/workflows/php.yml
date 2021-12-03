@@ -61,9 +61,9 @@ jobs:
         php-version: 8.0
         extensions: json
         ini-values: date.timezone=Europe/Paris
-#
-#    - name: Install Infection
-#      run: composer global require infection/infection
+
+    - name: Install Infection
+      run: composer global require infection/infection
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
@@ -73,8 +73,11 @@ jobs:
 
     - name: Run type coverage
       run: composer run-script psalm
-#
-#    - name: Run Infection
-#      run: |
-#        git fetch --depth=1 origin $GITHUB_BASE_REF
-#        ~/.composer/vendor/bin/infection --logger-github --git-diff-filter=AM
+
+    - name: Run check style
+      run: composer run-script phpcs
+
+    - name: Run Infection
+      run: |
+        git fetch --depth=1 origin $GITHUB_BASE_REF
+        ~/.composer/vendor/bin/infection --logger-github --git-diff-filter=AM

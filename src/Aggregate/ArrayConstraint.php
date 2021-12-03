@@ -45,14 +45,14 @@ final class ArrayConstraint implements ChildBuilderAttributeInterface
          * @var class-string<Constraint>
          */
         public string $constraint,
-
         /**
          * Constraint's constructor options
          *
          * @var mixed|null
          */
         public mixed $options = null
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

@@ -44,12 +44,10 @@ class TransformerError implements ChildBuilderAttributeInterface
          * The error message to show when transformer fail
          */
         public ?string $message = null,
-
         /**
          * The error code to provide when transformer fail
          */
         public ?string $code = null,
-
         /**
          * Method name to use for validate the transformer exception
          *
@@ -62,7 +60,8 @@ class TransformerError implements ChildBuilderAttributeInterface
          * @var literal-string|null
          */
         public ?string $validationCallback = null,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

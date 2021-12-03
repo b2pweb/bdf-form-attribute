@@ -34,7 +34,8 @@ final class DefaultValue implements ChildBuilderAttributeInterface
 {
     public function __construct(
         public mixed $default
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

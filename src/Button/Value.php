@@ -35,7 +35,8 @@ final class Value implements ButtonBuilderAttributeInterface
          * The button HTTP value
          */
         public string $value,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

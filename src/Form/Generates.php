@@ -39,7 +39,8 @@ final class Generates implements FormBuilderAttributeInterface
          * @var class-string
          */
         public string $className,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

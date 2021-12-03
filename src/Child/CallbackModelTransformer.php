@@ -73,21 +73,20 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
          * @var literal-string|null
          */
         public ?string $callback = null,
-
         /**
          * Method name use to define the transformation process from input value to the entity
          *
          * @var literal-string|null
          */
         public ?string $toEntity = null,
-
         /**
          * Method name use to define the transformation process from entity value to input
          *
          * @var literal-string|null
          */
         public ?string $toInput = null,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}
@@ -99,11 +98,12 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
             return;
         }
 
-        $builder->modelTransformer(new class($form, $this) implements TransformerInterface {
+        $builder->modelTransformer(new class ($form, $this) implements TransformerInterface {
             public function __construct(
-                private AttributeForm            $form,
+                private AttributeForm $form,
                 private CallbackModelTransformer $attribute,
-            ) {}
+            ) {
+            }
 
             /**
              * {@inheritdoc}

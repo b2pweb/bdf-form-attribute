@@ -78,7 +78,6 @@ final class Choices implements ChildBuilderAttributeInterface
          * @var literal-string|array
          */
         public string|array $choices,
-
         /**
          * The error message
          * If not provided, a default message will be used
@@ -86,14 +85,14 @@ final class Choices implements ChildBuilderAttributeInterface
          * @var string|null
          */
         public ?string $message = null,
-
         /**
          * Extra constraint options
          *
          * @var array
          */
         public array $options = [],
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

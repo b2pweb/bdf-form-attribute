@@ -57,7 +57,6 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
          * @var literal-string
          */
         public string $methodName,
-
         /**
          * The error message to use
          * This option is used only if the validator return false, in other cases,
@@ -66,7 +65,8 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
          * @var string|null
          */
         public ?string $message = null,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}

@@ -47,7 +47,8 @@ final class GetSet implements ChildBuilderAttributeInterface
          * If not provided, the input name will be used as property name
          */
         public ?string $propertyName = null,
-    ) {}
+    ) {
+    }
 
     /**
      * {@inheritdoc}
