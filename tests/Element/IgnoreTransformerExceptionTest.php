@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Element;
+namespace Tests\Form\Attribute\Element;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Element\CallbackTransformer;
-use Bdf\Form\Annotation\Element\IgnoreTransformerException;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Element\CallbackTransformer;
+use Bdf\Form\Attribute\Element\IgnoreTransformerException;
 use Bdf\Form\Leaf\StringElement;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ class IgnoreTransformerExceptionTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[IgnoreTransformerException, CallbackTransformer('transform')]
             public StringElement $foo;
 

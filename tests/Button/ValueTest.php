@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation\Button;
+namespace Tests\Form\Attribute\Button;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Button\Value;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Button\Value;
 use Bdf\Form\Button\ButtonInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +14,7 @@ class ValueTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Value('foo')]
             public ButtonInterface $button;
         };

@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Aggregate;
+namespace Bdf\Form\Attribute\Aggregate;
 
 use Attribute;
 use Bdf\Form\Aggregate\ArrayElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Symfony\Component\Validator\Constraints\Count as CountConstraint;
 
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\Count as CountConstraint;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Count(min: 3, max: 42)]
  *     private ArrayElement $values;
@@ -31,15 +31,15 @@ use Symfony\Component\Validator\Constraints\Count as CountConstraint;
  * @see ArrayElementBuilder::arrayConstraint() The called method
  * @see ArrayElementBuilder::count() Equivalent method call
  *
- * @implements ChildBuilderAnnotationInterface<ArrayElementBuilder>
+ * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Count extends CountConstraint implements ChildBuilderAnnotationInterface
+final class Count extends CountConstraint implements ChildBuilderAttributeInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->arrayConstraint($this);
     }

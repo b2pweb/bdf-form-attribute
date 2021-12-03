@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Form;
+namespace Tests\Form\Attribute\Form;
 
 use Bdf\Form\Aggregate\FormBuilderInterface;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Form\Generates;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Form\Generates;
 use Bdf\Form\Custom\CustomForm;
 use Bdf\Form\Leaf\FloatElement;
 use Bdf\Form\Leaf\IntegerElement;
@@ -19,7 +19,7 @@ class GeneratesTest extends TestCase
 {
     public function test()
     {
-        $form = new #[Generates(Person::class)] class extends AnnotationForm {
+        $form = new #[Generates(Person::class)] class extends AttributeForm {
             #[Setter]
             public StringElement $firstName;
             #[Setter]
@@ -57,7 +57,7 @@ class MyForm extends CustomForm
 }
 
 // @todo is repetable
-class OrderForm extends AnnotationForm
+class OrderForm extends AttributeForm
 {
     #[Positive(message: 'Valeur incorrecte'), Getter, Setter]
     public FloatElement $weight;

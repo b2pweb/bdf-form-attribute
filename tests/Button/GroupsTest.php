@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation\Button;
+namespace Tests\Form\Attribute\Button;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Button\Groups;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Button\Groups;
 use Bdf\Form\Button\ButtonInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +11,7 @@ class GroupsTest extends TestCase
 {
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Groups('foo', 'bar')]
             public ButtonInterface $btn;
         };

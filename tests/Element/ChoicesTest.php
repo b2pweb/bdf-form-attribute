@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Element;
+namespace Tests\Form\Attribute\Element;
 
 use Bdf\Form\Aggregate\ArrayElement;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Element\Choices;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Element\Choices;
 use Bdf\Form\Choice\ArrayChoice;
 use Bdf\Form\Leaf\StringElement;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +16,7 @@ class ChoicesTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Choices(choices: ['foo', 'bar'], message: 'my error')]
             public StringElement $foo;
 

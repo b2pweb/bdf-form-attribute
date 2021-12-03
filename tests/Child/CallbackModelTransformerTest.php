@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Child;
+namespace Tests\Form\Attribute\Child;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Child\CallbackModelTransformer;
-use Bdf\Form\Annotation\Form\Generates;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Child\CallbackModelTransformer;
+use Bdf\Form\Attribute\Form\Generates;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Getter;
@@ -18,7 +18,7 @@ class CallbackModelTransformerTest extends TestCase
      */
     public function test()
     {
-        $form = new #[Generates(Struct::class)] class extends AnnotationForm {
+        $form = new #[Generates(Struct::class)] class extends AttributeForm {
             #[CallbackModelTransformer('aTransformer'), Getter, Setter]
             public StringElement $a;
             #[CallbackModelTransformer(toEntity: 'bToEntity', toInput: 'bToInput'), Getter, Setter]

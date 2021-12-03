@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Element;
+namespace Tests\Form\Attribute\Element;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Element\CallbackTransformer;
-use Bdf\Form\Annotation\Element\TransformerError;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Element\CallbackTransformer;
+use Bdf\Form\Attribute\Element\TransformerError;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\Validator\TransformerExceptionConstraint;
 use http\Message;
@@ -17,7 +17,7 @@ class TransformerErrorTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[CallbackTransformer('transformer'), TransformerError('my message')]
             public StringElement $foo;
             #[CallbackTransformer('transformer'), TransformerError(message: 'bar', code: 'BAR_ERROR')]
@@ -40,7 +40,7 @@ class TransformerErrorTest extends TestCase
      */
     public function test_with_callback()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[CallbackTransformer('transformer'), TransformerError(validationCallback: 'handleError')]
             public StringElement $foo;
 

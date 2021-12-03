@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation\Child;
+namespace Tests\Form\Attribute\Child;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Child\Configure;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Child\Configure;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\Leaf\StringElementBuilder;
@@ -16,7 +16,7 @@ class ConfigureTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Configure('configureFoo')]
             public StringElement $foo;
 

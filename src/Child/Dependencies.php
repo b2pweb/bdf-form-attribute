@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Child;
+namespace Bdf\Form\Attribute\Child;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 
 /**
@@ -17,7 +17,7 @@ use Bdf\Form\Child\ChildBuilderInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Dependencies('bar', 'rab')]
  *     private FloatElement $foo;
@@ -29,7 +29,7 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * @see ChildBuilderInterface::depends() The called method
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Dependencies implements ChildBuilderAnnotationInterface
+final class Dependencies implements ChildBuilderAttributeInterface
 {
     /**
      * @var list<string>
@@ -47,7 +47,7 @@ final class Dependencies implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->depends(...$this->dependencies);
     }

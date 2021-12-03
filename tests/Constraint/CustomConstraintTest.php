@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation\Constraint;
+namespace Tests\Form\Attribute\Constraint;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Constraint\CustomConstraint;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Constraint\CustomConstraint;
 use Bdf\Form\Leaf\StringElement;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +11,7 @@ class CustomConstraintTest extends TestCase
 {
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[CustomConstraint('validateFoo', message: 'Foo length must be a multiple of 2')]
             public StringElement $foo;
 

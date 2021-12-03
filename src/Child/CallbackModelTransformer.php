@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Child;
+namespace Bdf\Form\Attribute\Child;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
-use Bdf\Form\Annotation\Element\CallbackTransformer;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Element\CallbackTransformer;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementInterface;
 use Bdf\Form\Transformer\TransformerInterface;
@@ -32,7 +32,7 @@ use Bdf\Form\Transformer\TransformerInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[CallbackModelTransformer(toEntity: 'fooToModel', toInput: 'fooToInput')]
  *     private IntegerElement $foo;
@@ -63,7 +63,7 @@ use Bdf\Form\Transformer\TransformerInterface;
  * @see CallbackTransformer For use transformer in same way, but for http transformer intead of model one
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class CallbackModelTransformer implements ChildBuilderAnnotationInterface
+final class CallbackModelTransformer implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -86,7 +86,7 @@ final class CallbackModelTransformer implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         if ($this->callback) {
             $builder->modelTransformer([$form, $this->callback]);
@@ -95,8 +95,8 @@ final class CallbackModelTransformer implements ChildBuilderAnnotationInterface
 
         $builder->modelTransformer(new class($form, $this) implements TransformerInterface {
             public function __construct(
-                private AnnotationForm           $form,
-                private CallbackModelTransformer $annotation,
+                private AttributeForm            $form,
+                private CallbackModelTransformer $attribute,
             ) {}
 
             /**
@@ -104,11 +104,11 @@ final class CallbackModelTransformer implements ChildBuilderAnnotationInterface
              */
             public function transformToHttp($value, ElementInterface $input)
             {
-                if (!$this->annotation->toInput) {
+                if (!$this->attribute->toInput) {
                     return $value;
                 }
 
-                return $this->form->{$this->annotation->toInput}($value, $input);
+                return $this->form->{$this->attribute->toInput}($value, $input);
             }
 
             /**
@@ -116,11 +116,11 @@ final class CallbackModelTransformer implements ChildBuilderAnnotationInterface
              */
             public function transformFromHttp($value, ElementInterface $input)
             {
-                if (!$this->annotation->toEntity) {
+                if (!$this->attribute->toEntity) {
                     return $value;
                 }
 
-                return $this->form->{$this->annotation->toEntity}($value, $input);
+                return $this->form->{$this->attribute->toEntity}($value, $input);
             }
         });
     }

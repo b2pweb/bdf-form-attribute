@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Element;
+namespace Bdf\Form\Attribute\Element;
 
 use Attribute;
 use Bdf\Form\AbstractElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Choice\ArrayChoice;
 use Bdf\Form\Choice\Choiceable;
@@ -31,7 +31,7 @@ use Bdf\Form\Leaf\StringElementBuilder;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Choices(['bar', 'rab'])]
  *     private StringElement $foo;
@@ -62,7 +62,7 @@ use Bdf\Form\Leaf\StringElementBuilder;
  * @see LazzyChoice Used when a method name is given as parameter
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Choices implements ChildBuilderAnnotationInterface
+final class Choices implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -95,7 +95,7 @@ final class Choices implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $options = $this->options;
 

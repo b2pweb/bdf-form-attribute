@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Form;
+namespace Bdf\Form\Attribute\Form;
 
 use Attribute;
 use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Aggregate\Value\ValueGenerator;
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\AttributeForm;
 
 /**
  * Define the value generator of the form, using a callback method
@@ -20,7 +20,7 @@ use Bdf\Form\Annotation\AnnotationForm;
  * Usage:
  * <code>
  * #[CallbackGenerator('generateValue')]
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     public function generateValue(FormInterface $form)
  *     {
@@ -34,7 +34,7 @@ use Bdf\Form\Annotation\AnnotationForm;
  * @see Generates For generate with a simple class name
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class CallbackGenerator implements FormBuilderAnnotationInterface
+final class CallbackGenerator implements FormBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -48,7 +48,7 @@ final class CallbackGenerator implements FormBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnFormBuilder(AnnotationForm $form, FormBuilderInterface $builder): void
+    public function applyOnFormBuilder(AttributeForm $form, FormBuilderInterface $builder): void
     {
         $builder->generates([$form, $this->callback]);
     }

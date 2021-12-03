@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Aggregate;
+namespace Tests\Form\Attribute\Aggregate;
 
 use Bdf\Form\Aggregate\ArrayElement;
-use Bdf\Form\Annotation\Aggregate\Count;
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\Aggregate\Count;
+use Bdf\Form\Attribute\AttributeForm;
 use PHPUnit\Framework\TestCase;
 
 class CountTest extends TestCase
@@ -14,7 +14,7 @@ class CountTest extends TestCase
      */
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Count(min: 3, max: 5)]
             public ArrayElement $values;
         };

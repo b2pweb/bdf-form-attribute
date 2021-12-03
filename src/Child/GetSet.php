@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Child;
+namespace Bdf\Form\Attribute\Child;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\PropertyAccess\Getter;
 use Bdf\Form\PropertyAccess\Setter;
@@ -20,7 +20,7 @@ use Bdf\Form\PropertyAccess\Setter;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[GetSet('bar')]
  *     private FloatElement $foo;
@@ -36,7 +36,7 @@ use Bdf\Form\PropertyAccess\Setter;
  * @see Setter For define only the hydrator
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class GetSet implements ChildBuilderAnnotationInterface
+final class GetSet implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -52,7 +52,7 @@ final class GetSet implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->hydrator(new Setter($this->propertyName))->extractor(new Getter($this->propertyName));
     }

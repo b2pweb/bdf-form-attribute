@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Child;
+namespace Bdf\Form\Attribute\Child;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Transformer\TransformerInterface;
 
@@ -18,7 +18,7 @@ use Bdf\Form\Transformer\TransformerInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[ModelTransformer(MyTransformer::class, ['foo', 'bar'])]
  *     private IntegerElement $foo;
@@ -29,7 +29,7 @@ use Bdf\Form\Transformer\TransformerInterface;
  * @see CallbackModelTransformer For use custom methods as transformer instead of class
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class ModelTransformer implements ChildBuilderAnnotationInterface
+final class ModelTransformer implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -50,7 +50,7 @@ final class ModelTransformer implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->modelTransformer(new $this->transformerClass(...$this->constructorArguments));
     }

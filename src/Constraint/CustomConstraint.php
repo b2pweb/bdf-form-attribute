@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Constraint;
+namespace Bdf\Form\Attribute\Constraint;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Constraint\Closure;
 use Bdf\Form\ElementBuilderInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraint;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[CustomConstraint('validateFoo', message: 'Foo is invalid')]
  *     private IntegerElement $foo;
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraint;
  * @see Closure The used constraint
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class CustomConstraint implements ChildBuilderAnnotationInterface
+final class CustomConstraint implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -69,7 +69,7 @@ final class CustomConstraint implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $constraint = new Closure(['callback' => [$form, $this->methodName]]);
 

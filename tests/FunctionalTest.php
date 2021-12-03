@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation;
+namespace Tests\Form\Attribute;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\Button\SubmitButton;
 use Bdf\Form\Child\ChildInterface;
@@ -26,7 +26,7 @@ class FunctionalTest extends TestCase
      */
     public function test_simple()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[NotBlank, Length(min: 3), Getter, Setter]
             public StringElement $firstName;
 
@@ -68,7 +68,7 @@ class FunctionalTest extends TestCase
      */
     public function test_setter_with_name()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Setter('bar')]
             public StringElement $foo;
         };
@@ -82,7 +82,7 @@ class FunctionalTest extends TestCase
      */
     public function test_getter_with_name()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[Getter('bar')]
             public StringElement $foo;
         };
@@ -117,7 +117,7 @@ class FunctionalTest extends TestCase
      */
     public function test_buttons()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             public ButtonInterface $foo;
             public ButtonInterface $bar;
         };
@@ -146,7 +146,7 @@ class FunctionalTest extends TestCase
      */
     public function test_filter()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[FilterVar(FILTER_SANITIZE_FULL_SPECIAL_CHARS), Setter]
             public StringElement $foo;
         };
@@ -160,7 +160,7 @@ class FunctionalTest extends TestCase
      */
     public function test_transformer()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[MyTransformer, Setter]
             public StringElement $foo;
         };
@@ -170,7 +170,7 @@ class FunctionalTest extends TestCase
     }
 }
 
-class BaseForm extends AnnotationForm
+class BaseForm extends AttributeForm
 {
     #[NotBlank, Getter, Setter]
     private StringElement $foo;

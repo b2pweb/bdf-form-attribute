@@ -1,12 +1,12 @@
 <?php
 
-namespace Bdf\Form\Annotation\Aggregate;
+namespace Bdf\Form\Attribute\Aggregate;
 
 use Attribute;
 use Bdf\Form\Aggregate\ArrayElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
-use Bdf\Form\Annotation\Constraint\Satisfy;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Constraint\Satisfy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Symfony\Component\Validator\Constraint;
 
@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraint;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[ArrayConstraint(Unique::class, ['message' => 'My error'])]
  *     private ArrayElement $values;
@@ -33,10 +33,10 @@ use Symfony\Component\Validator\Constraint;
  * @see Satisfy Attribute for add constraint for items
  * @see ArrayElementBuilder::arrayConstraint() The called method
  *
- * @implements ChildBuilderAnnotationInterface<ArrayElementBuilder>
+ * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class ArrayConstraint implements ChildBuilderAnnotationInterface
+final class ArrayConstraint implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -57,7 +57,7 @@ final class ArrayConstraint implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->arrayConstraint($this->constraint, $this->options);
     }

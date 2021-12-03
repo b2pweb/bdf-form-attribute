@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Form\Annotation\Aggregate;
+namespace Tests\Form\Attribute\Aggregate;
 
 use Bdf\Form\Aggregate\ArrayElement;
-use Bdf\Form\Annotation\Aggregate\ElementType;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Form\Generates;
+use Bdf\Form\Attribute\Aggregate\ElementType;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Form\Generates;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\IntegerElementBuilder;
 use Bdf\Form\Leaf\StringElement;
@@ -19,7 +19,7 @@ class ElementTypeTest extends TestCase
      */
     public function test_simple()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[ElementType(IntegerElement::class), Setter]
             public ArrayElement $values;
         };
@@ -35,7 +35,7 @@ class ElementTypeTest extends TestCase
      */
     public function test_with_configurator()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[ElementType(IntegerElement::class, "configureField"), Setter]
             public ArrayElement $values;
 
@@ -56,7 +56,7 @@ class ElementTypeTest extends TestCase
      */
     public function test_with_embedded()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[ElementType(EmbeddedForm::class), Setter]
             public ArrayElement $values;
         };
@@ -69,7 +69,7 @@ class ElementTypeTest extends TestCase
 }
 
 #[Generates(Struct::class)]
-class EmbeddedForm extends AnnotationForm
+class EmbeddedForm extends AttributeForm
 {
     #[Setter]
     public StringElement $a;

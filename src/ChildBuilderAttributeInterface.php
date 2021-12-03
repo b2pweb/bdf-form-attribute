@@ -1,6 +1,6 @@
 <?php
 
-namespace Bdf\Form\Annotation;
+namespace Bdf\Form\Attribute;
 
 use Bdf\Form\Child\ChildBuilderInterface;
 
@@ -12,13 +12,13 @@ use Bdf\Form\Child\ChildBuilderInterface;
  *
  * @template E as \Bdf\Form\ElementBuilderInterface
  */
-interface ChildBuilderAnnotationInterface
+interface ChildBuilderAttributeInterface
 {
     /**
      * Configure the child builder
      *
-     * @param AnnotationForm $form
+     * @param AttributeForm $form
      * @param ChildBuilderInterface<E> $builder
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void;
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void;
 }

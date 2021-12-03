@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Form\Annotation\Child;
+namespace Tests\Form\Attribute\Child;
 
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Child\GetSet;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Child\GetSet;
 use Bdf\Form\Leaf\StringElement;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +11,7 @@ class GetSetTest extends TestCase
 {
     public function test()
     {
-        $form = new class extends AnnotationForm {
+        $form = new class extends AttributeForm {
             #[GetSet]
             public StringElement $a;
 

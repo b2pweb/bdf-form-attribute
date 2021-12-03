@@ -1,9 +1,9 @@
 <?php
 
-namespace Bdf\Form\Annotation\Button;
+namespace Bdf\Form\Attribute\Button;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Button\ButtonBuilderInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\RootElementInterface;
@@ -20,7 +20,7 @@ use Bdf\Form\RootElementInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Groups('Foo', 'Bar')]
  *     private ButtonInterface $btn;
@@ -32,7 +32,7 @@ use Bdf\Form\RootElementInterface;
  * @see RootElementInterface::constraintGroups()
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Groups implements ButtonBuilderAnnotationInterface
+final class Groups implements ButtonBuilderAttributeInterface
 {
     /**
      * @var list<string>
@@ -50,7 +50,7 @@ final class Groups implements ButtonBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnButtonBuilder(AnnotationForm $form, ButtonBuilderInterface $builder): void
+    public function applyOnButtonBuilder(AttributeForm $form, ButtonBuilderInterface $builder): void
     {
         $builder->groups($this->groups);
     }

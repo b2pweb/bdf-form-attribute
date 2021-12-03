@@ -1,9 +1,9 @@
 <?php
 
-namespace Bdf\Form\Annotation\Button;
+namespace Bdf\Form\Attribute\Button;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Button\ButtonBuilderInterface;
 
 /**
@@ -18,7 +18,7 @@ use Bdf\Form\Button\ButtonBuilderInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Value('Foo')]
  *     private ButtonInterface $btn;
@@ -28,7 +28,7 @@ use Bdf\Form\Button\ButtonBuilderInterface;
  * @see ButtonBuilderInterface::value() The called method
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class Value implements ButtonBuilderAnnotationInterface
+final class Value implements ButtonBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -40,7 +40,7 @@ final class Value implements ButtonBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnButtonBuilder(AnnotationForm $form, ButtonBuilderInterface $builder): void
+    public function applyOnButtonBuilder(AttributeForm $form, ButtonBuilderInterface $builder): void
     {
         $builder->value($this->value);
     }

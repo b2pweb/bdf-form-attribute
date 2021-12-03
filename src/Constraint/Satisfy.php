@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Constraint;
+namespace Bdf\Form\Attribute\Constraint;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Symfony\Component\Validator\Constraint;
 
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Satisfy(MyConstraint::class, ['foo' => 'bar'])]
  *     private IntegerElement $foo;
@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Constraint;
  * @see Constraint
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class Satisfy implements ChildBuilderAnnotationInterface
+class Satisfy implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -52,7 +52,7 @@ class Satisfy implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->satisfy($this->constraint, $this->options);
     }

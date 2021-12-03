@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Aggregate;
+namespace Bdf\Form\Attribute\Aggregate;
 
 use Attribute;
 use Bdf\Form\Aggregate\ArrayElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementInterface;
 
@@ -22,7 +22,7 @@ use Bdf\Form\ElementInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[ElementType(IntegerElement::class, 'configureValueItem')]
  *     private ArrayElement $values;
@@ -37,10 +37,10 @@ use Bdf\Form\ElementInterface;
  *
  * @see ArrayElementBuilder::element() The called method
  *
- * @implements ChildBuilderAnnotationInterface<ArrayElementBuilder>
+ * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-class ElementType implements ChildBuilderAnnotationInterface
+class ElementType implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -62,7 +62,7 @@ class ElementType implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $configurator = $this->configurator ? [$form, $this->configurator] : null;
         $builder->element($this->elementType, $configurator);

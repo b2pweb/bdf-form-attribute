@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Element;
+namespace Bdf\Form\Attribute\Element;
 
 use Attribute;
 use Bdf\Form\AbstractElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Transformer\TransformerInterface;
 
@@ -23,7 +23,7 @@ use Bdf\Form\Transformer\TransformerInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[MyTransformer, TransformerError(message: 'Foo is in invalid format', code: 'FOO_FORMAT_ERROR')]
  *     private StringElement $foo;
@@ -34,10 +34,10 @@ use Bdf\Form\Transformer\TransformerInterface;
  * @see ValidatorBuilderTrait::transformerErrorCode() The called method when code parameter is provided
  * @see ValidatorBuilderTrait::transformerExceptionValidation() The called method when validationCallback parameter is provided
  *
- * @implements ChildBuilderAnnotationInterface<AbstractElementBuilder>
+ * @implements ChildBuilderAttributeInterface<AbstractElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class TransformerError implements ChildBuilderAnnotationInterface
+class TransformerError implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -65,7 +65,7 @@ class TransformerError implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         if ($this->message) {
             $builder->transformerErrorMessage($this->message);

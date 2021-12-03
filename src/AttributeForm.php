@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation;
+namespace Bdf\Form\Attribute;
 
 use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Aggregate\FormInterface;
-use Bdf\Form\Annotation\Button\ButtonBuilderAnnotationInterface;
-use Bdf\Form\Annotation\Form\FormBuilderAnnotationInterface;
+use Bdf\Form\Attribute\Button\ButtonBuilderAttributeInterface;
+use Bdf\Form\Attribute\Form\FormBuilderAttributeInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\Custom\CustomForm;
 use Bdf\Form\ElementInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraint;
 /**
  * Utility class for declare a form using PHP 8 attributes and declare elements using typed properties
  */
-abstract class AnnotationForm extends CustomForm
+abstract class AttributeForm extends CustomForm
 {
     /**
      * @var array<string, \ReflectionProperty>
@@ -37,11 +37,11 @@ abstract class AnnotationForm extends CustomForm
      */
     protected function configure(FormBuilderInterface $builder): void
     {
-        // @todo extraire dans une "annotation processor"
+        // @todo extraire dans une "attribute processor"
 
-        for ($reflection = new ReflectionClass($this); $reflection->getName() !== AnnotationForm::class; $reflection = $reflection->getParentClass()) {
+        for ($reflection = new ReflectionClass($this); $reflection->getName() !== AttributeForm::class; $reflection = $reflection->getParentClass()) {
             foreach ($reflection->getAttributes() as $attribute) {
-                if (is_subclass_of($attribute->getName(), FormBuilderAnnotationInterface::class)) {
+                if (is_subclass_of($attribute->getName(), FormBuilderAttributeInterface::class)) {
                     $attribute->newInstance()->applyOnFormBuilder($this, $builder);
                 }
             }
@@ -66,7 +66,7 @@ abstract class AnnotationForm extends CustomForm
 
                     foreach ($property->getAttributes() as $attribute) {
                         match (true) {
-                            is_subclass_of($attribute->getName(), ButtonBuilderAnnotationInterface::class) => $attribute->newInstance()->applyOnButtonBuilder($this, $submitBuilder),
+                            is_subclass_of($attribute->getName(), ButtonBuilderAttributeInterface::class) => $attribute->newInstance()->applyOnButtonBuilder($this, $submitBuilder),
                         };
                     }
 
@@ -84,7 +84,7 @@ abstract class AnnotationForm extends CustomForm
 
                 foreach ($property->getAttributes() as $attribute) {
                     match (true) {
-                        is_subclass_of($attribute->getName(), ChildBuilderAnnotationInterface::class) => $attribute->newInstance()->applyOnChildBuilder($this, $elementBuilder),
+                        is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class) => $attribute->newInstance()->applyOnChildBuilder($this, $elementBuilder),
 
                         is_subclass_of($attribute->getName(), Constraint::class) => $elementBuilder->satisfy($attribute->newInstance()),
                         is_subclass_of($attribute->getName(), FilterInterface::class) => $elementBuilder->filter($attribute->newInstance()),

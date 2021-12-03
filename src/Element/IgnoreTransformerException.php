@@ -1,11 +1,11 @@
 <?php
 
-namespace Bdf\Form\Annotation\Element;
+namespace Bdf\Form\Attribute\Element;
 
 use Attribute;
 use Bdf\Form\AbstractElementBuilder;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Util\ValidatorBuilderTrait;
 
@@ -24,7 +24,7 @@ use Bdf\Form\Util\ValidatorBuilderTrait;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[MyTransformer, IgnoreTransformerException]
  *     private StringElement $foo;
@@ -33,10 +33,10 @@ use Bdf\Form\Util\ValidatorBuilderTrait;
  *
  * @see ValidatorBuilderTrait::ignoreTransformerException() The called method
  *
- * @implements ChildBuilderAnnotationInterface<AbstractElementBuilder>
+ * @implements ChildBuilderAttributeInterface<AbstractElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
-final class IgnoreTransformerException implements ChildBuilderAnnotationInterface
+final class IgnoreTransformerException implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -48,7 +48,7 @@ final class IgnoreTransformerException implements ChildBuilderAnnotationInterfac
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->ignoreTransformerException($this->ignore);
     }

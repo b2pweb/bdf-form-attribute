@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Form\Annotation\Form;
+namespace Tests\Form\Attribute\Form;
 
 use Bdf\Form\Aggregate\FormInterface;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\Form\CallbackGenerator;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Form\CallbackGenerator;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Setter;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@ class CallbackGeneratorTest extends TestCase
 {
     public function test()
     {
-        $form = new #[CallbackGenerator('generate')] class extends AnnotationForm {
+        $form = new #[CallbackGenerator('generate')] class extends AttributeForm {
             #[Setter]
             public StringElement $foo;
 

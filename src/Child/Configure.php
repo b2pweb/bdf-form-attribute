@@ -1,10 +1,10 @@
 <?php
 
-namespace Bdf\Form\Annotation\Child;
+namespace Bdf\Form\Attribute\Child;
 
 use Attribute;
-use Bdf\Form\Annotation\AnnotationForm;
-use Bdf\Form\Annotation\ChildBuilderAnnotationInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Child\ChildBuilderInterface;
 
 /**
@@ -15,7 +15,7 @@ use Bdf\Form\Child\ChildBuilderInterface;
  *
  * Usage:
  * <code>
- * class MyForm extends AnnotationForm
+ * class MyForm extends AttributeForm
  * {
  *     #[Configure('configureFoo')]
  *     private IntegerElement $foo;
@@ -27,9 +27,9 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * }
  * </code>
  */
-// @todo date time after et before annotations
+// @todo date time after et before attributes
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class Configure implements ChildBuilderAnnotationInterface
+class Configure implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -42,7 +42,7 @@ class Configure implements ChildBuilderAnnotationInterface
     /**
      * {@inheritdoc}
      */
-    public function applyOnChildBuilder(AnnotationForm $form, ChildBuilderInterface $builder): void
+    public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $form->{$this->callback}($builder);
     }

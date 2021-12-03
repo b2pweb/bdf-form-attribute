@@ -1,8 +1,8 @@
 <?php
 
-namespace Bdf\Form\Annotation\Button;
+namespace Bdf\Form\Attribute\Button;
 
-use Bdf\Form\Annotation\AnnotationForm;
+use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Button\ButtonBuilderInterface;
 
 /**
@@ -11,13 +11,13 @@ use Bdf\Form\Button\ButtonBuilderInterface;
  *
  * @see ButtonBuilderInterface The configured builder
  */
-interface ButtonBuilderAnnotationInterface
+interface ButtonBuilderAttributeInterface
 {
     /**
      * Configure the button builder
      *
-     * @param AnnotationForm $form
+     * @param AttributeForm $form
      * @param ButtonBuilderInterface $builder
      */
-    public function applyOnButtonBuilder(AnnotationForm $form, ButtonBuilderInterface $builder): void;
+    public function applyOnButtonBuilder(AttributeForm $form, ButtonBuilderInterface $builder): void;
 }
