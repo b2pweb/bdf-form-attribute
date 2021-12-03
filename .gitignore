@@ -3,4 +3,3 @@ vendor/
 composer.lock
 .phpunit.result.cache
 infection.log
-

@@ -47,4 +47,32 @@ class CallbackModelTransformerTest extends TestCase
         $this->assertEquals('Hello World !', $form->a->value());
         $this->assertEquals(10, $form->b->value());
     }
+
+    /**
+     *
+     */
+    public function test_with_only_one_transformation_method()
+    {
+        $form = new class extends AttributeForm {
+            #[CallbackModelTransformer(toEntity: 't'), Getter, Setter]
+            public IntegerElement $foo;
+            #[CallbackModelTransformer(toInput: 't'), Getter, Setter]
+            public IntegerElement $bar;
+
+            public function t($value, $input)
+            {
+                return $value + 1;
+            }
+        };
+
+        $form->submit(['foo' => '5', 'bar' => '5']);
+        $this->assertSame([
+            'foo' => 6,
+            'bar' => 5
+        ], $form->value());
+
+        $form->import(['foo' => 5, 'bar' => 5]);
+        $this->assertSame(5, $form->foo->value());
+        $this->assertSame(6, $form->bar->value());
+    }
 }
