@@ -35,6 +35,8 @@ class Configure implements ChildBuilderAttributeInterface
         /**
          * The method name to use as configurator
          * The method should follow the prototype `public function (ChildBuilderInterface $builder): void`
+         *
+         * @var literal-string
          */
         public string $callback
     ) {}

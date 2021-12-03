@@ -10,6 +10,7 @@ use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Choice\ArrayChoice;
 use Bdf\Form\Choice\Choiceable;
 use Bdf\Form\Choice\ChoiceBuilderTrait;
+use Bdf\Form\Choice\ChoiceInterface;
 use Bdf\Form\Choice\LazzyChoice;
 use Bdf\Form\ElementBuilderInterface;
 use Bdf\Form\Leaf\StringElementBuilder;
@@ -73,6 +74,8 @@ final class Choices implements ChildBuilderAttributeInterface
          *
          * If the value is an array, the key will be used as label (displayed value), and the value as real value
          * The label is not required.
+         *
+         * @var literal-string|array
          */
         public string|array $choices,
 
@@ -106,7 +109,7 @@ final class Choices implements ChildBuilderAttributeInterface
         // Q&D fix for psalm because it does not recognize trait as type
         /** @var StringElementBuilder $builder */
         $builder->choices(
-            is_string($this->choices) ? fn() => $form->{$this->choices}() : $this->choices,
+            is_string($this->choices) ? new LazzyChoice([$form, $this->choices]) : $this->choices,
             $options
         );
     }

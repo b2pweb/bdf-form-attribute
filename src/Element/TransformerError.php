@@ -58,6 +58,8 @@ class TransformerError implements ChildBuilderAttributeInterface
          *
          * If the method return false, the exception will be ignored
          * Else, the method should fill `TransformerExceptionConstraint` with error message and code to provide the custom error
+         *
+         * @var literal-string|null
          */
         public ?string $validationCallback = null,
     ) {}

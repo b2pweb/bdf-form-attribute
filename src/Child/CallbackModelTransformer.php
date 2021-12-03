@@ -69,16 +69,22 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
         /**
          * Method name use to define the unified transformer method
          * If defined, the other parameters will be ignored
+         *
+         * @var literal-string|null
          */
         public ?string $callback = null,
 
         /**
          * Method name use to define the transformation process from input value to the entity
+         *
+         * @var literal-string|null
          */
         public ?string $toEntity = null,
 
         /**
          * Method name use to define the transformation process from entity value to input
+         *
+         * @var literal-string|null
          */
         public ?string $toInput = null,
     ) {}

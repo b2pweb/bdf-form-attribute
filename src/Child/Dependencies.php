@@ -38,6 +38,7 @@ final class Dependencies implements ChildBuilderAttributeInterface
 
     /**
      * @param string ...$dependencies List of inputs names
+     * @no-named-arguments
      */
     public function __construct(string ...$dependencies)
     {

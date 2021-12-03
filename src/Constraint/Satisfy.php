@@ -44,7 +44,7 @@ class Satisfy implements ChildBuilderAttributeInterface
         /**
          * Constraint's constructor options
          *
-         * @var mixed|null
+         * @var array|null|string
          */
         public mixed $options = null
     ) {}

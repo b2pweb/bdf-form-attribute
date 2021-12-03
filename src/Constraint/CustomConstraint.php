@@ -53,6 +53,8 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
          * - Return false for invalid input, with the default error message (or the declared one)
          * - Return string for a custom error message
          * - Return array with error message and code
+         *
+         * @var literal-string
          */
         public string $methodName,
 

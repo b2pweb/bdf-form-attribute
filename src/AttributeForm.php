@@ -13,6 +13,7 @@ use Bdf\Form\Filter\FilterInterface;
 use Bdf\Form\PropertyAccess\ExtractorInterface;
 use Bdf\Form\PropertyAccess\HydratorInterface;
 use Bdf\Form\Transformer\TransformerInterface;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionNamedType;
 use Symfony\Component\Validator\Constraint;
@@ -23,12 +24,12 @@ use Symfony\Component\Validator\Constraint;
 abstract class AttributeForm extends CustomForm
 {
     /**
-     * @var array<string, \ReflectionProperty>
+     * @var array<non-empty-string, \ReflectionProperty>
      */
     private array $elementProperties = [];
 
     /**
-     * @var array<string, \ReflectionProperty>
+     * @var array<non-empty-string, \ReflectionProperty>
      */
     private array $buttonProperties = [];
 
@@ -40,14 +41,15 @@ abstract class AttributeForm extends CustomForm
         // @todo extraire dans une "attribute processor"
 
         for ($reflection = new ReflectionClass($this); $reflection->getName() !== AttributeForm::class; $reflection = $reflection->getParentClass()) {
-            foreach ($reflection->getAttributes() as $attribute) {
-                if (is_subclass_of($attribute->getName(), FormBuilderAttributeInterface::class)) {
-                    $attribute->newInstance()->applyOnFormBuilder($this, $builder);
-                }
+            foreach ($reflection->getAttributes(FormBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                $attribute->newInstance()->applyOnFormBuilder($this, $builder);
             }
 
             foreach ($reflection->getProperties() as $property) {
-                if (!$property->hasType() || isset($this->elementProperties[$property->getName()]) || isset($this->buttonProperties[$property->getName()])) {
+                /** @var non-empty-string $name */
+                $name = $property->getName();
+
+                if (!$property->hasType() || isset($this->elementProperties[$name]) || isset($this->buttonProperties[$name])) {
                     continue;
                 }
 
@@ -60,14 +62,12 @@ abstract class AttributeForm extends CustomForm
                 // @todo is_subclass_of($elementType, ButtonInterface::class) ?
                 if ($elementType === ButtonInterface::class) {
                     $property->setAccessible(true);
-                    $this->buttonProperties[$property->getName()] = $property;
+                    $this->buttonProperties[$name] = $property;
 
-                    $submitBuilder = $builder->submit($property->getName());
+                    $submitBuilder = $builder->submit($name);
 
-                    foreach ($property->getAttributes() as $attribute) {
-                        match (true) {
-                            is_subclass_of($attribute->getName(), ButtonBuilderAttributeInterface::class) => $attribute->newInstance()->applyOnButtonBuilder($this, $submitBuilder),
-                        };
+                    foreach ($property->getAttributes(ButtonBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                        $attribute->newInstance()->applyOnButtonBuilder($this, $submitBuilder);
                     }
 
                     continue;
@@ -78,20 +78,42 @@ abstract class AttributeForm extends CustomForm
                 }
 
                 $property->setAccessible(true);
-                $this->elementProperties[$property->getName()] = $property;
+                $this->elementProperties[$name] = $property;
 
-                $elementBuilder = $builder->add($property->getName(), $elementType);
+                $elementBuilder = $builder->add($name, $elementType);
 
-                foreach ($property->getAttributes() as $attribute) {
-                    match (true) {
-                        is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class) => $attribute->newInstance()->applyOnChildBuilder($this, $elementBuilder),
+                foreach ($property->getAttributes(ChildBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    $attribute->newInstance()->applyOnChildBuilder($this, $elementBuilder);
+                }
 
-                        is_subclass_of($attribute->getName(), Constraint::class) => $elementBuilder->satisfy($attribute->newInstance()),
-                        is_subclass_of($attribute->getName(), FilterInterface::class) => $elementBuilder->filter($attribute->newInstance()),
-                        is_subclass_of($attribute->getName(), TransformerInterface::class) => $elementBuilder->transformer($attribute->newInstance()),
-                        is_subclass_of($attribute->getName(), HydratorInterface::class) => $elementBuilder->hydrator($attribute->newInstance()),
-                        is_subclass_of($attribute->getName(), ExtractorInterface::class) => $elementBuilder->extractor($attribute->newInstance()),
-                    };
+                foreach ($property->getAttributes(Constraint::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                        $elementBuilder->satisfy($attribute->newInstance());
+                    }
+                }
+
+                foreach ($property->getAttributes(FilterInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                        $elementBuilder->filter($attribute->newInstance());
+                    }
+                }
+
+                foreach ($property->getAttributes(TransformerInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                        $elementBuilder->transformer($attribute->newInstance());
+                    }
+                }
+
+                foreach ($property->getAttributes(HydratorInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                        $elementBuilder->hydrator($attribute->newInstance());
+                    }
+                }
+
+                foreach ($property->getAttributes(ExtractorInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                        $elementBuilder->extractor($attribute->newInstance());
+                    }
                 }
             }
         }

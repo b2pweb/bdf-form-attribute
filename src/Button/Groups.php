@@ -41,6 +41,7 @@ final class Groups implements ButtonBuilderAttributeInterface
 
     /**
      * @param string ...$groups List of validation groups
+     * @no-named-arguments
      */
     public function __construct(string ...$groups)
     {
