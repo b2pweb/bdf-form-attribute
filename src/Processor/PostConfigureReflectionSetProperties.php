@@ -19,7 +19,6 @@ final class PostConfigureReflectionSetProperties implements PostConfigureInterfa
          * @var array<non-empty-string, ReflectionProperty>
          */
         private array $elementProperties,
-
         /**
          * Properties which store form buttons
          * The key is the button name, and value is the reflection property

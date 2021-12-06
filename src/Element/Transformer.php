@@ -41,7 +41,6 @@ class Transformer implements ChildBuilderAttributeInterface
          * @var class-string<TransformerInterface>
          */
         public string $transformerClass,
-
         /**
          * Arguments to provide on the transformer constructor
          *
