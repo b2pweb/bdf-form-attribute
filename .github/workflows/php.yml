@@ -16,12 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Set Timezone
-      uses: szenius/set-timezone@v1.0
-      with:
-        timezoneLinux: "Europe/Paris"
-    
+
     - name: Install PHP
       uses: shivammathur/setup-php@v2
       with:
@@ -49,11 +44,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Set Timezone
-      uses: szenius/set-timezone@v1.0
-      with:
-        timezoneLinux: "Europe/Paris"
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2
