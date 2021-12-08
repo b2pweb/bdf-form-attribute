@@ -5,7 +5,10 @@ namespace Bdf\Form\Attribute\Constraint;
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
+use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -55,5 +58,14 @@ class Satisfy implements ChildBuilderAttributeInterface
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->satisfy($this->constraint, $this->options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $type = $generator->useAndSimplifyType($this->constraint);
+        $generator->line('$?->satisfy(?::class, ?);', [$name, new Literal($type), $this->options]);
     }
 }

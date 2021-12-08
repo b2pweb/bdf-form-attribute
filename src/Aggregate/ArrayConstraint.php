@@ -7,7 +7,10 @@ use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Constraint\Satisfy;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
+use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -60,5 +63,15 @@ final class ArrayConstraint implements ChildBuilderAttributeInterface
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->arrayConstraint($this->constraint, $this->options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $constraint = $generator->useAndSimplifyType($this->constraint);
+
+        $generator->line('$?->arrayConstraint(?::class, ?);', [$name, new Literal($constraint), $this->options]);
     }
 }

@@ -3,23 +3,27 @@
 namespace Tests\Form\Attribute\Aggregate;
 
 use Bdf\Form\Aggregate\ArrayElement;
+use Bdf\Form\Aggregate\FormBuilder;
 use Bdf\Form\Attribute\Aggregate\ElementType;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Form\Generates;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
+use Bdf\Form\Attribute\Processor\ReflectionProcessor;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\IntegerElementBuilder;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Setter;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 
 class ElementTypeTest extends TestCase
 {
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_simple()
+    public function test_simple(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[ElementType(IntegerElement::class), Setter]
             public ArrayElement $values;
         };
@@ -31,11 +35,11 @@ class ElementTypeTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_with_configurator()
+    public function test_with_configurator(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[ElementType(IntegerElement::class, "configureField"), Setter]
             public ArrayElement $values;
 
@@ -52,11 +56,11 @@ class ElementTypeTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_with_embedded()
+    public function test_with_embedded(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[ElementType(EmbeddedForm::class), Setter]
             public ArrayElement $values;
         };
@@ -65,6 +69,60 @@ class ElementTypeTest extends TestCase
         $this->assertTrue($form->valid());
 
         $this->assertEquals(['values' => [new Struct('az', 'er'), new Struct('ty', 'ui')]], $form->value());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_code_generator()
+    {
+        $form = new class extends AttributeForm {
+            #[ElementType(IntegerElement::class, "configureField"), Setter]
+            public ArrayElement $values;
+
+            public function configureField(IntegerElementBuilder $builder): void
+            {
+                $builder->min(200);
+            }
+        };
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\ArrayElement;
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\Leaf\IntegerElement;
+use Bdf\Form\PropertyAccess\Setter;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $values = $builder->add('values', ArrayElement::class);
+        $values->element(IntegerElement::class, [$form, 'configureField']);
+        $values->hydrator(new Setter());
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        $form->values = $inner['values']->element();
+    }
+}
+
+PHP
+            , $form);
     }
 }
 

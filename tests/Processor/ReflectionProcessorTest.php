@@ -8,7 +8,7 @@ use Bdf\Form\Attribute\Processor\ReflectionProcessor;
 use Bdf\Form\Attribute\Processor\ReflectionStrategyInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\Leaf\StringElement;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 
 class ReflectionProcessorTest extends TestCase
 {
@@ -63,9 +63,6 @@ class ReflectionProcessorTest extends TestCase
 
 class A extends AttributeForm
 {
-    public $withoutType;
-    public array $withNotObjectType;
-
     public StringElement $foo;
     protected ButtonInterface $btn;
 
@@ -75,6 +72,9 @@ class A extends AttributeForm
 
 class B extends A
 {
+    public $withoutType;
+    public array $withNotObjectType;
+
     public StringElement $foo;
     protected ButtonInterface $btn;
 }

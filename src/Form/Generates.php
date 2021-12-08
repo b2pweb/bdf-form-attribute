@@ -5,6 +5,10 @@ namespace Bdf\Form\Attribute\Form;
 use Attribute;
 use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
+use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\Method;
 
 /**
  * Define the value generator of the form, using a class name
@@ -48,5 +52,18 @@ final class Generates implements FormBuilderAttributeInterface
     public function applyOnFormBuilder(AttributeForm $form, FormBuilderInterface $builder): void
     {
         $builder->generates($this->className);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForFormBuilder(AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line(
+            '$builder->generates(?::class);',
+            [
+                new Literal($generator->useAndSimplifyType($this->className))
+            ]
+        );
     }
 }

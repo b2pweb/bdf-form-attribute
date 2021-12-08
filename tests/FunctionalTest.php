@@ -4,6 +4,7 @@ namespace Tests\Form\Attribute;
 
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\Button\SubmitButton;
 use Bdf\Form\Child\ChildInterface;
@@ -14,7 +15,7 @@ use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Getter;
 use Bdf\Form\PropertyAccess\Setter;
 use Bdf\Form\Transformer\TransformerInterface;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -22,11 +23,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class FunctionalTest extends TestCase
 {
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_simple()
+    public function test_simple(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[NotBlank, Length(min: 3), Getter, Setter]
             public StringElement $firstName;
 
@@ -64,11 +65,11 @@ class FunctionalTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_setter_with_name()
+    public function test_setter_with_name(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[Setter('bar')]
             public StringElement $foo;
         };
@@ -78,11 +79,11 @@ class FunctionalTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_getter_with_name()
+    public function test_getter_with_name(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[Getter('bar')]
             public StringElement $foo;
         };
@@ -92,11 +93,11 @@ class FunctionalTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_inheritance()
+    public function test_inheritance(AttributesProcessorInterface $processor)
     {
-        $form = new ChildForm();
+        $form = new ChildForm(null, $processor);
 
         $this->assertInstanceOf(StringElement::class, $form['foo']->element());
         $this->assertInstanceOf(IntegerElement::class, $form['bar']->element());
@@ -115,9 +116,74 @@ class FunctionalTest extends TestCase
     /**
      *
      */
-    public function test_buttons()
+    public function test_inheritance_code_generator()
     {
-        $form = new class extends AttributeForm {
+        $form = new ChildForm();
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\Leaf\IntegerElement;
+use Bdf\Form\Leaf\StringElement;
+use Bdf\Form\PropertyAccess\Getter;
+use Bdf\Form\PropertyAccess\Setter;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Tests\Form\Attribute\BaseForm;
+use Tests\Form\Attribute\ChildForm;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $bar = $builder->add('bar', IntegerElement::class);
+        $bar->satisfy(new NotBlank());
+        $bar->satisfy(new GreaterThan(5));
+        $bar->hydrator(new Setter());
+        $bar->extractor(new Getter());
+
+
+        $foo = $builder->add('foo', StringElement::class);
+        $foo->satisfy(new NotBlank());
+        $foo->hydrator(new Setter());
+        $foo->extractor(new Getter());
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        (\Closure::bind(function () use ($inner, $form) {
+            $form->bar = $inner['bar']->element();
+        }, null, ChildForm::class))();
+        (\Closure::bind(function () use ($inner, $form) {
+            $form->foo = $inner['foo']->element();
+        }, null, BaseForm::class))();
+    }
+}
+
+PHP
+        , $form
+);
+    }
+
+    /**
+     * @dataProvider provideAttributesProcessor
+     */
+    public function test_buttons(AttributesProcessorInterface $processor)
+    {
+        $form = new class(null, $processor) extends AttributeForm {
             public ButtonInterface $foo;
             public ButtonInterface $bar;
         };
@@ -142,11 +208,11 @@ class FunctionalTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_filter()
+    public function test_filter(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[FilterVar(FILTER_SANITIZE_FULL_SPECIAL_CHARS), Setter]
             public StringElement $foo;
         };
@@ -156,11 +222,11 @@ class FunctionalTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_transformer()
+    public function test_transformer(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[MyTransformer, Setter]
             public StringElement $foo;
         };

@@ -6,6 +6,8 @@ use Attribute;
 use Bdf\Form\AbstractElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Choice\ArrayChoice;
 use Bdf\Form\Choice\Choiceable;
@@ -14,6 +16,7 @@ use Bdf\Form\Choice\ChoiceInterface;
 use Bdf\Form\Choice\LazzyChoice;
 use Bdf\Form\ElementBuilderInterface;
 use Bdf\Form\Leaf\StringElementBuilder;
+use Nette\PhpGenerator\Literal;
 
 /**
  * Define available values choice for the element
@@ -111,5 +114,26 @@ final class Choices implements ChildBuilderAttributeInterface
             is_string($this->choices) ? new LazzyChoice([$form, $this->choices]) : $this->choices,
             $options
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $options = $this->options;
+
+        if ($this->message) {
+            $options['message'] = $options['multipleMessage'] = $this->message;
+        }
+
+        if (is_string($this->choices)) {
+            $generator->use(LazzyChoice::class);
+            $choices = new Literal('new LazzyChoice([$form, ?])', [$this->choices]);
+        } else {
+            $choices = $this->choices;
+        }
+
+        $generator->line('$?->choices(?, ?);', [$name, $choices, $options]);
     }
 }

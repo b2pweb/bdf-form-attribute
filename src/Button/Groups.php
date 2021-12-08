@@ -4,6 +4,8 @@ namespace Bdf\Form\Attribute\Button;
 
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Button\ButtonBuilderInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\RootElementInterface;
@@ -54,5 +56,13 @@ final class Groups implements ButtonBuilderAttributeInterface
     public function applyOnButtonBuilder(AttributeForm $form, ButtonBuilderInterface $builder): void
     {
         $builder->groups($this->groups);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForButtonBuilder(AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line('    ->groups(?)', [$this->groups]);
     }
 }

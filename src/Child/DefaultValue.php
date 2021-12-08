@@ -5,6 +5,8 @@ namespace Bdf\Form\Attribute\Child;
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 
 /**
@@ -43,5 +45,13 @@ final class DefaultValue implements ChildBuilderAttributeInterface
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->default($this->default);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line('$?->default(?);', [$name, $this->default]);
     }
 }

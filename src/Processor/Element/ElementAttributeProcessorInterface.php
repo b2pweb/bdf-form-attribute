@@ -2,8 +2,10 @@
 
 namespace Bdf\Form\Attribute\Processor\Element;
 
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
 use Bdf\Form\Attribute\Processor\ConfigureFormBuilderStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
+use ReflectionAttribute;
 
 /**
  * Process an attribute type to configure the child builder
@@ -34,4 +36,16 @@ interface ElementAttributeProcessorInterface
      * @see \ReflectionAttribute::newInstance() $attribute is created using this method
      */
     public function process(ChildBuilderInterface $builder, object $attribute): void;
+
+    /**
+     * Generate the code corresponding to the attribute
+     * The generated code must perform same action as `process()`
+     *
+     * @param non-empty-string $name The variable name without $
+     * @param AttributesProcessorGenerator $generator Code generator for the "configureBuilder" method
+     * @param ReflectionAttribute<T> $attribute Attribute to use
+     *
+     * @return void
+     */
+    public function generateCode(string $name, AttributesProcessorGenerator $generator, ReflectionAttribute $attribute): void;
 }

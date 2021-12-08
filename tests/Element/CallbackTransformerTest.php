@@ -5,18 +5,19 @@ namespace Tests\Form\Attribute\Element;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Child\GetSet;
 use Bdf\Form\Attribute\Element\CallbackTransformer;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\StringElement;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 
 class CallbackTransformerTest extends TestCase
 {
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test()
+    public function test(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[CallbackTransformer('fooTransformer')]
             public StringElement $foo;
 
@@ -51,11 +52,11 @@ class CallbackTransformerTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_with_only_one_transformation_method()
+    public function test_with_only_one_transformation_method(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[CallbackTransformer(fromHttp: 't'), GetSet]
             public IntegerElement $foo;
             #[CallbackTransformer(toHttp: 't'), GetSet]
@@ -77,5 +78,95 @@ class CallbackTransformerTest extends TestCase
         $view = $form->view();
         $this->assertEquals(5, $view['foo']->value());
         $this->assertEquals(6, $view['bar']->value());
+    }
+
+    public function test_code_generator()
+    {
+        $form = new class() extends AttributeForm {
+            #[CallbackTransformer('fooTransformer')]
+            public StringElement $foo;
+
+            #[CallbackTransformer(fromHttp: 'inTransformer', toHttp: 'outTransformer')]
+            public StringElement $bar;
+
+            public function fooTransformer($value, StringElement $input, bool $toPhp)
+            {
+                return json_encode([$value, $toPhp]);
+            }
+
+            public function inTransformer($value, StringElement $input)
+            {
+                return json_encode(['in', $value]);
+            }
+
+            public function outTransformer($value, StringElement $input)
+            {
+                return json_encode(['out', $value]);
+            }
+        };
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\ElementInterface;
+use Bdf\Form\Leaf\StringElement;
+use Bdf\Form\Transformer\TransformerInterface;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $foo = $builder->add('foo', StringElement::class);
+        $foo->transformer([$form, 'fooTransformer']);
+
+        $bar = $builder->add('bar', StringElement::class);
+        $bar->transformer(new class ($form) implements TransformerInterface {
+            public $form;
+
+            public function __construct($form)
+            {
+                $this->form = $form;
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformToHttp($value, ElementInterface $input)
+            {
+                return $this->form->outTransformer($value, $input);
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformFromHttp($value, ElementInterface $input)
+            {
+                return $this->form->inTransformer($value, $input);
+            }
+        });
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        $form->foo = $inner['foo']->element();
+        $form->bar = $inner['bar']->element();
+    }
+}
+
+PHP
+        , $form);
     }
 }

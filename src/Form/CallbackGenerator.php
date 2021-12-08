@@ -6,6 +6,9 @@ use Attribute;
 use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Aggregate\Value\ValueGenerator;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
+use Nette\PhpGenerator\Method;
 
 /**
  * Define the value generator of the form, using a callback method
@@ -52,5 +55,13 @@ final class CallbackGenerator implements FormBuilderAttributeInterface
     public function applyOnFormBuilder(AttributeForm $form, FormBuilderInterface $builder): void
     {
         $builder->generates([$form, $this->callback]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForFormBuilder(AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line('$builder->generates([$this, ?]);', [$this->callback]);
     }
 }

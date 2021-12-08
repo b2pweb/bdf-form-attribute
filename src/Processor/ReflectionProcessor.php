@@ -69,7 +69,7 @@ final class ReflectionProcessor implements AttributesProcessorInterface
             }
         }
 
-        return new PostConfigureReflectionSetProperties($elementProperties, $buttonProperties);
+        return $this->strategy->onPostConfigure($elementProperties, $buttonProperties, $form);
     }
 
     /**

@@ -5,9 +5,12 @@ namespace Bdf\Form\Attribute\Constraint;
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Constraint\Closure;
 use Bdf\Form\ElementBuilderInterface;
+use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -37,6 +40,8 @@ use Symfony\Component\Validator\Constraint;
  * @see ElementBuilderInterface::satisfy() The called method
  * @see Constraint
  * @see Closure The used constraint
+ *
+ * @todo rename callback constraint
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class CustomConstraint implements ChildBuilderAttributeInterface
@@ -80,5 +85,20 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
         }
 
         $builder->satisfy($constraint);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->use(Closure::class, 'ClosureConstraint');
+
+        $parameters = $this->message
+            ? new Literal("['callback' => [\$form, ?], 'message' => ?]", [$this->methodName, $this->message])
+            : new Literal('[$form, ?]', [$this->methodName])
+        ;
+
+        $generator->line('$?->satisfy(new ClosureConstraint(?));', [$name, $parameters]);
     }
 }

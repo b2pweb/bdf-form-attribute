@@ -6,6 +6,7 @@ use Attribute;
 use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Symfony\Component\Validator\Constraints\Count as CountConstraint;
 
@@ -52,5 +53,32 @@ final class Count extends CountConstraint implements ChildBuilderAttributeInterf
     public function validatedBy(): string
     {
         return CountConstraint::class . 'Validator';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $defaultParameters = get_class_vars(CountConstraint::class);
+        /** @var array{
+         *     minMessage?: string,
+         *     maxMessage?: string,
+         *     exactMessage?: string,
+         *     divisibleByMessage?: string,
+         *     min?: int|null,
+         *     max?: int|null,
+         *     divisibleBy?: int|null,
+         * } $parameters
+         */
+        $parameters = get_object_vars($this);
+
+        foreach ($parameters as $paramName => $value) {
+            if (!array_key_exists($paramName, $defaultParameters) || $value === $defaultParameters[$paramName]) {
+                unset($parameters[$paramName]);
+            }
+        }
+
+        $generator->line('$?->arrayConstraint(?);', [$name, $generator->new(CountConstraint::class, $parameters)]);
     }
 }

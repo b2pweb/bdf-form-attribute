@@ -2,6 +2,7 @@
 
 namespace Bdf\Form\Attribute\Processor\Element;
 
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\PropertyAccess\ExtractorInterface;
 
@@ -29,5 +30,16 @@ final class ExtractorAttributeProcessor implements ElementAttributeProcessorInte
     public function process(ChildBuilderInterface $builder, object $attribute): void
     {
         $builder->extractor($attribute);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCode(string $name, AttributesProcessorGenerator $generator, \ReflectionAttribute $attribute): void
+    {
+        // @todo refactor
+        /** @var class-string<ExtractorInterface> $constraint */
+        $constraint = $attribute->getName();
+        $generator->line('$?->extractor(?);', [$name, $generator->new($constraint, $attribute->getArguments())]);
     }
 }

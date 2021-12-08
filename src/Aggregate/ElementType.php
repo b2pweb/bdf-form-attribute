@@ -6,8 +6,11 @@ use Attribute;
 use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementInterface;
+use Nette\PhpGenerator\Literal;
 
 /**
  * Attribute for define the array element type
@@ -66,5 +69,19 @@ class ElementType implements ChildBuilderAttributeInterface
     {
         $configurator = $this->configurator ? [$form, $this->configurator] : null;
         $builder->element($this->elementType, $configurator);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $elementType = new Literal($generator->useAndSimplifyType($this->elementType));
+
+        if ($this->configurator) {
+            $generator->line('$?->element(?::class, [$form, ?]);', [$name, $elementType, $this->configurator]);
+        } else {
+            $generator->line('$?->element(?::class);', [$name, $elementType]);
+        }
     }
 }

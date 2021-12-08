@@ -58,4 +58,12 @@ interface ReflectionStrategyInterface
      * @return void
      */
     public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder): void;
+
+    /**
+     * @param array<non-empty-string, ReflectionProperty> $elementProperties
+     * @param array<non-empty-string, ReflectionProperty> $buttonProperties
+     * @param AttributeForm $form
+     * @return PostConfigureInterface|null
+     */
+    public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface;
 }

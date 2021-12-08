@@ -91,4 +91,12 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
             }
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface
+    {
+        return new PostConfigureReflectionSetProperties($elementProperties, $buttonProperties);
+    }
 }

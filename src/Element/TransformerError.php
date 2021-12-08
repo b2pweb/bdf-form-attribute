@@ -6,6 +6,8 @@ use Attribute;
 use Bdf\Form\AbstractElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Transformer\TransformerInterface;
 
@@ -79,5 +81,27 @@ class TransformerError implements ChildBuilderAttributeInterface
         if ($this->validationCallback) {
             $builder->transformerExceptionValidation([$form, $this->validationCallback]);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line('$?', [$name]);
+
+        if ($this->message) {
+            $generator->line('    ->transformerErrorMessage(?)', [$this->message]);
+        }
+
+        if ($this->code) {
+            $generator->line('    ->transformerErrorCode(?)', [$this->code]);
+        }
+
+        if ($this->validationCallback) {
+            $generator->line('    ->transformerExceptionValidation([$form, ?])', [$this->validationCallback]);
+        }
+
+        $generator->line(';');
     }
 }

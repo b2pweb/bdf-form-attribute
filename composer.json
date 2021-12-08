@@ -23,7 +23,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": "8.0.*",
-        "b2pweb/bdf-form": "dev-prepare-attributes"
+        "b2pweb/bdf-form": "dev-prepare-attributes",
+        "nette/php-generator": "~3.6"
     },
     "require-dev": {
         "phpunit/phpunit": "~9.5",

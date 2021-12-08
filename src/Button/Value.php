@@ -4,6 +4,8 @@ namespace Bdf\Form\Attribute\Button;
 
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Button\ButtonBuilderInterface;
 
 /**
@@ -44,5 +46,13 @@ final class Value implements ButtonBuilderAttributeInterface
     public function applyOnButtonBuilder(AttributeForm $form, ButtonBuilderInterface $builder): void
     {
         $builder->value($this->value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForButtonBuilder(AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->line('    ->value(?)', [$this->value]);
     }
 }

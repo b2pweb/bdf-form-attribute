@@ -2,8 +2,11 @@
 
 namespace Bdf\Form\Attribute\Processor\Element;
 
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\PropertyAccess\HydratorInterface;
+use Nette\PhpGenerator\Literal;
 
 /**
  * Define as hydrator by calling hydrator()
@@ -29,5 +32,16 @@ final class HydratorAttributeProcessor implements ElementAttributeProcessorInter
     public function process(ChildBuilderInterface $builder, object $attribute): void
     {
         $builder->hydrator($attribute);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCode(string $name, AttributesProcessorGenerator $generator, \ReflectionAttribute $attribute): void
+    {
+        // @todo refactor
+        /** @var class-string<HydratorInterface> $constraint */
+        $constraint = $attribute->getName();
+        $generator->line('$?->hydrator(?);', [$name, $generator->new($constraint, $attribute->getArguments())]);
     }
 }

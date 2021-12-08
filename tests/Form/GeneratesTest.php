@@ -3,21 +3,28 @@
 namespace Tests\Form\Attribute\Form;
 
 use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\Value\MyEntity;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Form\Generates;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
+use Bdf\Form\Attribute\Processor\ReflectionProcessor;
 use Bdf\Form\Custom\CustomForm;
 use Bdf\Form\Leaf\FloatElement;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Getter;
 use Bdf\Form\PropertyAccess\Setter;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Constraints\Positive;
 
 class GeneratesTest extends TestCase
 {
-    public function test()
+    /**
+     * @dataProvider provideAttributesProcessor
+     */
+    public function test(AttributesProcessorInterface $processor)
     {
         $form = new #[Generates(Person::class)] class extends AttributeForm {
             #[Setter]
@@ -35,6 +42,48 @@ class GeneratesTest extends TestCase
         $expected->lastName = 'Doe';
         $expected->age = 35;
         $this->assertEquals($expected, $form->value());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_code_generator()
+    {
+        $form = new #[Generates(Person::class)] class extends AttributeForm {
+        };
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Tests\Form\Attribute\Form\Person;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $builder->generates(Person::class);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+    }
+}
+
+PHP
+            , $form);
     }
 }
 

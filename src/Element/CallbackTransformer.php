@@ -6,10 +6,18 @@ use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Child\CallbackModelTransformer;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\CodeGenerator\ClassGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementBuilderInterface;
 use Bdf\Form\ElementInterface;
 use Bdf\Form\Transformer\TransformerInterface;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Factory;
+use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PsrPrinter;
 
 /**
  * Add a HTTP transformer on the child element, by using method
@@ -130,5 +138,44 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
                 return $this->form->{$this->attribute->fromHttp}($value, $input);
             }
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        if ($this->callback) {
+            $generator->line('$?->transformer([$form, ?]);', [$name, $this->callback]);
+            return;
+        }
+
+        $transformer = $generator->anonymousClass();
+        $transformer->implements(TransformerInterface::class);
+
+        $transformer->class()->addProperty('form');
+        $constructor = $transformer->class()->addMethod('__construct');
+        $constructor->addParameter('form');
+        $constructor->setBody('$this->form = $form;');
+
+        $toHttp = $transformer->implementsMethod(TransformerInterface::class, 'transformToHttp');
+        $fromHttp = $transformer->implementsMethod(TransformerInterface::class, 'transformFromHttp');
+
+        if ($this->toHttp) {
+            $toHttp->setBody('return $this->form->?($value, $input);', [$this->toHttp]);
+        } else {
+            $toHttp->setBody('return $value;');
+        }
+
+        if ($this->fromHttp) {
+            $fromHttp->setBody('return $this->form->?($value, $input);', [$this->fromHttp]);
+        } else {
+            $fromHttp->setBody('return $value;');
+        }
+
+        $generator->line(
+            '$?->transformer(new class ($form) ?);',
+            [$name, new Literal($transformer->generateClass())]
+        );
     }
 }

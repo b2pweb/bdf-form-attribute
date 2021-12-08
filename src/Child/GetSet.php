@@ -5,6 +5,8 @@ namespace Bdf\Form\Attribute\Child;
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\PropertyAccess\Getter;
 use Bdf\Form\PropertyAccess\Setter;
@@ -56,5 +58,14 @@ final class GetSet implements ChildBuilderAttributeInterface
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->hydrator(new Setter($this->propertyName))->extractor(new Getter($this->propertyName));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $generator->use(Setter::class)->use(Getter::class);
+        $generator->line('$?->hydrator(new Setter(?))->extractor(new Getter(?));', [$name, $this->propertyName, $this->propertyName]);
     }
 }

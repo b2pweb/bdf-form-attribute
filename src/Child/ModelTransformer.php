@@ -5,8 +5,11 @@ namespace Bdf\Form\Attribute\Child;
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Transformer\TransformerInterface;
+use Nette\PhpGenerator\Literal;
 
 /**
  * Add a model transformer on the child, using a transformer class
@@ -53,5 +56,14 @@ final class ModelTransformer implements ChildBuilderAttributeInterface
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
         $builder->modelTransformer(new $this->transformerClass(...$this->constructorArguments));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        $transformer = $generator->useAndSimplifyType($this->transformerClass);
+        $generator->line('$?->modelTransformer(new ?(...?));', [$name, new Literal($transformer), $this->constructorArguments]);
     }
 }

@@ -5,20 +5,21 @@ namespace Tests\Form\Attribute\Child;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Child\CallbackModelTransformer;
 use Bdf\Form\Attribute\Form\Generates;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use Bdf\Form\Leaf\IntegerElement;
 use Bdf\Form\Leaf\StringElement;
 use Bdf\Form\PropertyAccess\Getter;
 use Bdf\Form\PropertyAccess\Setter;
-use PHPUnit\Framework\TestCase;
+use Tests\Form\Attribute\TestCase;
 
 class CallbackModelTransformerTest extends TestCase
 {
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test()
+    public function test(AttributesProcessorInterface $processor)
     {
-        $form = new #[Generates(Struct::class)] class extends AttributeForm {
+        $form = new #[Generates(Struct::class)] class(null, $processor) extends AttributeForm {
             #[CallbackModelTransformer('aTransformer'), Getter, Setter]
             public StringElement $a;
             #[CallbackModelTransformer(toEntity: 'bToEntity', toInput: 'bToInput'), Getter, Setter]
@@ -49,11 +50,11 @@ class CallbackModelTransformerTest extends TestCase
     }
 
     /**
-     *
+     * @dataProvider provideAttributesProcessor
      */
-    public function test_with_only_one_transformation_method()
+    public function test_with_only_one_transformation_method(AttributesProcessorInterface $processor)
     {
-        $form = new class extends AttributeForm {
+        $form = new class(null, $processor) extends AttributeForm {
             #[CallbackModelTransformer(toEntity: 't'), Getter, Setter]
             public IntegerElement $foo;
             #[CallbackModelTransformer(toInput: 't'), Getter, Setter]
@@ -74,5 +75,117 @@ class CallbackModelTransformerTest extends TestCase
         $form->import(['foo' => 5, 'bar' => 5]);
         $this->assertSame(5, $form->foo->value());
         $this->assertSame(6, $form->bar->value());
+    }
+
+    /**
+     *
+     */
+    public function test_code_generator()
+    {
+        $form = new class extends AttributeForm {
+            #[CallbackModelTransformer(toEntity: 't'), Getter, Setter]
+            public IntegerElement $foo;
+            #[CallbackModelTransformer(toInput: 't'), Getter, Setter]
+            public IntegerElement $bar;
+
+            public function t($value, $input)
+            {
+                return $value + 1;
+            }
+        };
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\ElementInterface;
+use Bdf\Form\Leaf\IntegerElement;
+use Bdf\Form\PropertyAccess\Getter;
+use Bdf\Form\PropertyAccess\Setter;
+use Bdf\Form\Transformer\TransformerInterface;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $foo = $builder->add('foo', IntegerElement::class);
+        $foo->modelTransformer(new class ($form) implements TransformerInterface {
+            public $form;
+
+            public function __construct($form)
+            {
+                $this->form = $form;
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformToHttp($value, ElementInterface $input)
+            {
+                return $value;
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformFromHttp($value, ElementInterface $input)
+            {
+                return $this->form->t($value, $input);
+            }
+        });
+        $foo->hydrator(new Setter());
+        $foo->extractor(new Getter());
+
+        $bar = $builder->add('bar', IntegerElement::class);
+        $bar->modelTransformer(new class ($form) implements TransformerInterface {
+            public $form;
+
+            public function __construct($form)
+            {
+                $this->form = $form;
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformToHttp($value, ElementInterface $input)
+            {
+                return $this->form->t($value, $input);
+            }
+
+            /**
+             * {@inheritdoc}
+             */
+            function transformFromHttp($value, ElementInterface $input)
+            {
+                return $value;
+            }
+        });
+        $bar->hydrator(new Setter());
+        $bar->extractor(new Getter());
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        $form->foo = $inner['foo']->element();
+        $form->bar = $inner['bar']->element();
+    }
+}
+
+PHP
+        , $form
+);
     }
 }

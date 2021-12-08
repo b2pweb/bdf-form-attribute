@@ -6,9 +6,15 @@ use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Element\CallbackTransformer;
+use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
+use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementInterface;
 use Bdf\Form\Transformer\TransformerInterface;
+use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\Method;
+use Nette\PhpGenerator\PsrPrinter;
 
 /**
  * Add a model transformer on the child element, by using method
@@ -129,5 +135,56 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
                 return $this->form->{$this->attribute->toEntity}($value, $input);
             }
         });
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
+    {
+        // @todo refactor with CallbackTransformer
+        if ($this->callback) {
+            $generator->line('$?->modelTransformer([$form, ?]);', [$name, $this->callback]);
+            return;
+        }
+
+        $generator->use(TransformerInterface::class);
+        $generator->use(ElementInterface::class);
+
+        $transformer = new ClassType();
+        $transformer->addImplement(TransformerInterface::class);
+
+        $transformer->addProperty('form');
+
+        $constructor = $transformer->addMethod('__construct');
+        $constructor->addParameter('form');
+        $constructor->setBody('$this->form = $form;');
+
+        $toInput = Method::from([TransformerInterface::class, 'transformToHttp']);
+        $toEntity = Method::from([TransformerInterface::class, 'transformFromHttp']);
+
+        $toInput->setComment('{@inheritdoc}');
+        $toEntity->setComment('{@inheritdoc}');
+
+        $transformer->addMember($toInput);
+        $transformer->addMember($toEntity);
+
+        if ($this->toInput) {
+            $toInput->setBody('return $this->form->?($value, $input);', [$this->toInput]);
+        } else {
+            $toInput->setBody('return $value;');
+        }
+
+        if ($this->toEntity) {
+            $toEntity->setBody('return $this->form->?($value, $input);', [$this->toEntity]);
+        } else {
+            $toEntity->setBody('return $value;');
+        }
+
+        $generator->line(
+            '$?->modelTransformer(new class ($form) ?);',
+            [$name, new Literal((new PsrPrinter())->printClass($transformer, $generator->namespace()))]
+        );
     }
 }
