@@ -5,7 +5,7 @@ namespace Tests\Form\Attribute\Processor;
 use Bdf\Form\Aggregate\FormBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Child\GetSet;
-use Bdf\Form\Attribute\Constraint\CustomConstraint;
+use Bdf\Form\Attribute\Constraint\CallbackConstraint;
 use Bdf\Form\Attribute\Form\Generates;
 use Bdf\Form\Attribute\Processor\CompileAttributesProcessor;
 use Bdf\Form\Leaf\IntegerElement;
@@ -224,15 +224,98 @@ PHP
 
         $this->assertStringEqualsFile($file, $code);
     }
+
+    public function test_generate()
+    {
+        $filename = '/tmp/manual_generated_configurator.php';
+
+        file_put_contents($filename, 'invalid php file');
+
+        $processor = new CompileAttributesProcessor(
+            fn (AttributeForm $form) => 'Generated\ManualConfigurator',
+            fn (string $className) => $filename
+        );
+
+        $form = new MyForm();
+
+        $processor->generate($form);
+
+        $this->assertFileExists($filename);
+        $this->assertStringEqualsFile(
+            $filename,
+            <<<'PHP'
+<?php
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\Constraint\Closure as ClosureConstraint;
+use Bdf\Form\Leaf\IntegerElement;
+use Bdf\Form\Leaf\StringElement;
+use Bdf\Form\PropertyAccess\Getter;
+use Bdf\Form\PropertyAccess\Setter;
+use Symfony\Component\Validator\Constraints\LessThan;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Positive;
+use Tests\Form\Attribute\Processor\MyForm;
+use Tests\Form\Attribute\Processor\Person;
+
+class ManualConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $builder->generates(Person::class);
+
+        $firstName = $builder->add('firstName', StringElement::class);
+        $firstName->satisfy(new ClosureConstraint([$form, 'validateName']));
+        $firstName->hydrator(new Setter(null))->extractor(new Getter(null));
+        $firstName->satisfy(new NotBlank());
+
+        $lastName = $builder->add('lastName', StringElement::class);
+        $lastName->satisfy(new ClosureConstraint([$form, 'validateName']));
+        $lastName->hydrator(new Setter(null))->extractor(new Getter(null));
+
+        $age = $builder->add('age', IntegerElement::class);
+        $age->hydrator(new Setter(null))->extractor(new Getter(null));
+        $age->satisfy(new Positive());
+        $age->satisfy(new LessThan(150));
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        (\Closure::bind(function () use ($inner, $form) {
+            $form->firstName = $inner['firstName']->element();
+            $form->lastName = $inner['lastName']->element();
+            $form->age = $inner['age']->element();
+        }, null, MyForm::class))();
+    }
+}
+
+PHP
+        );
+
+        $this->assertFalse(class_exists('Generated\ManualConfigurator', false));
+    }
 }
 
 #[Generates(Person::class)]
 class MyForm extends AttributeForm
 {
-    #[NotBlank, CustomConstraint('validateName'), GetSet]
+    #[NotBlank, CallbackConstraint('validateName'), GetSet]
     private StringElement $firstName;
 
-    #[CustomConstraint('validateName'), GetSet]
+    #[CallbackConstraint('validateName'), GetSet]
     private StringElement $lastName;
 
     #[Positive, LessThan(150), GetSet]

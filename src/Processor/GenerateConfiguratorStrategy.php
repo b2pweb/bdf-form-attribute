@@ -48,20 +48,6 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
     }
 
     /**
-     * Register a new processor for element attributes
-     *
-     * @param ElementAttributeProcessorInterface<T> $processor
-     *
-     * @return void
-     *
-     * @template T as object
-     */
-    public function registerElementAttributeProcessor(ElementAttributeProcessorInterface $processor): void
-    {
-        $this->elementProcessors[] = $processor;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder): void
@@ -177,5 +163,19 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
     public function code(): string
     {
         return $this->generator->print();
+    }
+
+    /**
+     * Register a new processor for element attributes
+     *
+     * @param ElementAttributeProcessorInterface<T> $processor
+     *
+     * @return void
+     *
+     * @template T as object
+     */
+    private function registerElementAttributeProcessor(ElementAttributeProcessorInterface $processor): void
+    {
+        $this->elementProcessors[] = $processor;
     }
 }

@@ -22,8 +22,6 @@ use Symfony\Component\Validator\Constraint;
  * $builder->array('values')->arrayConstraints(MyConstraint::class, $options);
  * </code>
  *
- * @todo custom array constraint
- *
  * Usage:
  * <code>
  * class MyForm extends AttributeForm
@@ -35,6 +33,7 @@ use Symfony\Component\Validator\Constraint;
  *
  * @see Satisfy Attribute for add constraint for items
  * @see ArrayElementBuilder::arrayConstraint() The called method
+ * @see CallbackArrayConstraint Use for a custom method validation
  *
  * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  */

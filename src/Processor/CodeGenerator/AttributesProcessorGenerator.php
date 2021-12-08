@@ -4,7 +4,6 @@ namespace Bdf\Form\Attribute\Processor\CodeGenerator;
 
 use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use InvalidArgumentException;
-use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
@@ -65,16 +64,6 @@ final class AttributesProcessorGenerator extends ClassGenerator
         $className = $this->useAndSimplifyType($className, $classAlias);
 
         return new Literal('new ?(...?:)', [new Literal($className), $parameters]);
-    }
-
-    /**
-     * Get utility for generate an anonymous class
-     *
-     * @return ClassGenerator
-     */
-    public function anonymousClass(): ClassGenerator
-    {
-        return new ClassGenerator($this->namespace(), new ClassType(), $this->printer());
     }
 
     /**

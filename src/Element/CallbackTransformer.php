@@ -8,6 +8,7 @@ use Bdf\Form\Attribute\Child\CallbackModelTransformer;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
 use Bdf\Form\Attribute\Processor\CodeGenerator\ClassGenerator;
+use Bdf\Form\Attribute\Processor\CodeGenerator\TransformerClassGenerator;
 use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementBuilderInterface;
@@ -150,27 +151,20 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
             return;
         }
 
-        $transformer = $generator->anonymousClass();
-        $transformer->implements(TransformerInterface::class);
+        $transformer = new TransformerClassGenerator($generator->namespace(), $generator->printer());
 
-        $transformer->class()->addProperty('form');
-        $constructor = $transformer->class()->addMethod('__construct');
-        $constructor->addParameter('form');
-        $constructor->setBody('$this->form = $form;');
-
-        $toHttp = $transformer->implementsMethod(TransformerInterface::class, 'transformToHttp');
-        $fromHttp = $transformer->implementsMethod(TransformerInterface::class, 'transformFromHttp');
+        $transformer->withPromotedProperty('form')->setPrivate();
 
         if ($this->toHttp) {
-            $toHttp->setBody('return $this->form->?($value, $input);', [$this->toHttp]);
+            $transformer->toHttp()->setBody('return $this->form->?($value, $input);', [$this->toHttp]);
         } else {
-            $toHttp->setBody('return $value;');
+            $transformer->toHttp()->setBody('return $value;');
         }
 
         if ($this->fromHttp) {
-            $fromHttp->setBody('return $this->form->?($value, $input);', [$this->fromHttp]);
+            $transformer->fromHttp()->setBody('return $this->form->?($value, $input);', [$this->fromHttp]);
         } else {
-            $fromHttp->setBody('return $value;');
+            $transformer->fromHttp()->setBody('return $value;');
         }
 
         $generator->line(

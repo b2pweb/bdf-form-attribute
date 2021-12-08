@@ -15,7 +15,6 @@ use Bdf\Form\PropertyAccess\Setter;
 use Bdf\Form\Transformer\TransformerInterface;
 use Tests\Form\Attribute\TestCase;
 
-// @todo Raw attribute for number elements
 class ModelTransformerTest extends TestCase
 {
     /**

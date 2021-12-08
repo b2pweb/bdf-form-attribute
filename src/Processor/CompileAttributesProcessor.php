@@ -2,6 +2,7 @@
 
 namespace Bdf\Form\Attribute\Processor;
 
+use Bdf\Form\Aggregate\FormBuilder;
 use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Attribute\AttributeForm;
 use LogicException;
@@ -15,8 +16,6 @@ use LogicException;
  * - Include the processor class file
  * - Instantiate the generated processor
  * - Delegate the form configuration to the generated processor
- *
- * @todo public method for only generate the class
  */
 final class CompileAttributesProcessor implements AttributesProcessorInterface
 {
@@ -55,6 +54,24 @@ final class CompileAttributesProcessor implements AttributesProcessorInterface
         $generated->configureBuilder($form, $builder);
 
         return $generated;
+    }
+
+    /**
+     * Generate the configurator for the given form
+     * Unlike `configureBuilder()` process, the class will be regenerated if already exists,
+     * and the class will not be included
+     *
+     * @param AttributeForm $form Form to generate
+     *
+     * @return void
+     */
+    public function generate(AttributeForm $form): void
+    {
+        /** @var class-string<AttributesProcessorInterface&PostConfigureInterface> $className */
+        $className = ($this->classNameResolver)($form);
+        $fileName = ($this->fileNameResolver)($className);
+
+        $this->generateProcessor($fileName, $className, $form, new FormBuilder());
     }
 
     /**

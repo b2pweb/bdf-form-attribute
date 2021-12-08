@@ -1,8 +1,9 @@
 <?php
 
-namespace Bdf\Form\Attribute\Constraint;
+namespace Bdf\Form\Attribute\Aggregate;
 
 use Attribute;
+use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
@@ -14,13 +15,11 @@ use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Define a custom constraint for an element, using a validation method
- *
- * Note: prefer the usage of constraint class, declared as attribute
+ * Define a custom constraint for an array element, using a validation method
  *
  * This attribute is equivalent to call :
  * <code>
- * $builder->integer('foo')->satisfy([$this, 'validateFoo'], 'Foo is invalid');
+ * $builder->array('foo')->arrayConstraint([$this, 'validateFoo'], 'Foo is invalid');
  * </code>
  *
  * Usage:
@@ -28,23 +27,24 @@ use Symfony\Component\Validator\Constraint;
  * class MyForm extends AttributeForm
  * {
  *     #[CustomConstraint('validateFoo', message: 'Foo is invalid')]
- *     private IntegerElement $foo;
+ *     private ArrayElement $foo;
  *
- *     public function validateFoo($value, ElementInterface $input): bool
+ *     public function validateFoo(array $value, ElementInterface $input): bool
  *     {
- *         return $value % 5 > 2;
+ *         return count($value) % 5 > 2;
  *     }
  * }
  * </code>
  *
- * @see ElementBuilderInterface::satisfy() The called method
+ * @see ArrayElementBuilder::arrayConstraint() The called method
  * @see Constraint
  * @see Closure The used constraint
+ * @see ArrayConstraint Use for a class constraint
  *
- * @todo rename callback constraint
+ * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class CustomConstraint implements ChildBuilderAttributeInterface
+final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
 {
     public function __construct(
         /**
@@ -52,7 +52,7 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
          * Must be a public method declared on the form class
          *
          * Its prototype should be :
-         * `public function ($value, ElementInterface $input): bool|string|array{code: string message: string}|null`
+         * `public function (array $value, ElementInterface $input): bool|string|array{code: string message: string}|null`
          *
          * - Return true, or null (nothing) for a valid input
          * - Return false for invalid input, with the default error message (or the declared one)
@@ -84,7 +84,7 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
             $constraint->message = $this->message;
         }
 
-        $builder->satisfy($constraint);
+        $builder->arrayConstraint($constraint);
     }
 
     /**
@@ -99,6 +99,6 @@ final class CustomConstraint implements ChildBuilderAttributeInterface
             : new Literal('[$form, ?]', [$this->methodName])
         ;
 
-        $generator->line('$?->satisfy(new ClosureConstraint(?));', [$name, $parameters]);
+        $generator->line('$?->arrayConstraint(new ClosureConstraint(?));', [$name, $parameters]);
     }
 }

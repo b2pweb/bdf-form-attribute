@@ -117,13 +117,6 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
     {
         $foo = $builder->add('foo', IntegerElement::class);
         $foo->modelTransformer(new class ($form) implements TransformerInterface {
-            public $form;
-
-            public function __construct($form)
-            {
-                $this->form = $form;
-            }
-
             /**
              * {@inheritdoc}
              */
@@ -138,6 +131,10 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
             function transformFromHttp($value, ElementInterface $input)
             {
                 return $this->form->t($value, $input);
+            }
+
+            public function __construct(private $form)
+            {
             }
         });
         $foo->hydrator(new Setter());
@@ -145,13 +142,6 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
 
         $bar = $builder->add('bar', IntegerElement::class);
         $bar->modelTransformer(new class ($form) implements TransformerInterface {
-            public $form;
-
-            public function __construct($form)
-            {
-                $this->form = $form;
-            }
-
             /**
              * {@inheritdoc}
              */
@@ -166,6 +156,10 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
             function transformFromHttp($value, ElementInterface $input)
             {
                 return $value;
+            }
+
+            public function __construct(private $form)
+            {
             }
         });
         $bar->hydrator(new Setter());

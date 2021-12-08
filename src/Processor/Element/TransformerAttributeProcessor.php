@@ -2,12 +2,9 @@
 
 namespace Bdf\Form\Attribute\Processor\Element;
 
-use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
-use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementBuilderInterface;
 use Bdf\Form\Transformer\TransformerInterface;
-use Nette\PhpGenerator\Literal;
 
 /**
  * Add the transformer by calling transformer()
@@ -19,6 +16,8 @@ use Nette\PhpGenerator\Literal;
  */
 final class TransformerAttributeProcessor implements ElementAttributeProcessorInterface
 {
+    use SimpleMethodCallGeneratorTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -38,11 +37,8 @@ final class TransformerAttributeProcessor implements ElementAttributeProcessorIn
     /**
      * {@inheritdoc}
      */
-    public function generateCode(string $name, AttributesProcessorGenerator $generator, \ReflectionAttribute $attribute): void
+    private function methodName(): string
     {
-        // @todo refactor
-        /** @var class-string<TransformerInterface> $constraint */
-        $constraint = $attribute->getName();
-        $generator->line('$?->transformer(?);', [$name, $generator->new($constraint, $attribute->getArguments())]);
+        return 'transformer';
     }
 }

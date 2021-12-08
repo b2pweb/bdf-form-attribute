@@ -79,7 +79,7 @@ class ATransformer implements TransformerInterface
 {
     public function transformToHttp($value, ElementInterface $input)
     {
-        // TODO: Implement transformToHttp() method.
+
     }
 
     public function transformFromHttp($value, ElementInterface $input)
@@ -93,7 +93,7 @@ class BTransformer implements TransformerInterface
 {
     public function transformToHttp($value, ElementInterface $input)
     {
-        // TODO: Implement transformToHttp() method.
+
     }
 
     public function transformFromHttp($value, ElementInterface $input)

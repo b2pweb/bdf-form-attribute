@@ -129,13 +129,6 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
 
         $bar = $builder->add('bar', StringElement::class);
         $bar->transformer(new class ($form) implements TransformerInterface {
-            public $form;
-
-            public function __construct($form)
-            {
-                $this->form = $form;
-            }
-
             /**
              * {@inheritdoc}
              */
@@ -150,6 +143,10 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
             function transformFromHttp($value, ElementInterface $input)
             {
                 return $this->form->inTransformer($value, $input);
+            }
+
+            public function __construct(private $form)
+            {
             }
         });
 

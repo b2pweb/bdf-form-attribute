@@ -37,20 +37,6 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     }
 
     /**
-     * Register a new processor for element attributes
-     *
-     * @param ElementAttributeProcessorInterface<T> $processor
-     *
-     * @return void
-     *
-     * @template T as object
-     */
-    public function registerElementAttributeProcessor(ElementAttributeProcessorInterface $processor): void
-    {
-        $this->elementProcessors[] = $processor;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder): void
@@ -98,5 +84,19 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface
     {
         return new PostConfigureReflectionSetProperties($elementProperties, $buttonProperties);
+    }
+
+    /**
+     * Register a new processor for element attributes
+     *
+     * @param ElementAttributeProcessorInterface<T> $processor
+     *
+     * @return void
+     *
+     * @template T as object
+     */
+    private function registerElementAttributeProcessor(ElementAttributeProcessorInterface $processor): void
+    {
+        $this->elementProcessors[] = $processor;
     }
 }

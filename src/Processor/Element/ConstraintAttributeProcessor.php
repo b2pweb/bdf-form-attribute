@@ -2,12 +2,8 @@
 
 namespace Bdf\Form\Attribute\Processor\Element;
 
-use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
-use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\ElementBuilderInterface;
-use Nette\PhpGenerator\Literal;
-use ReflectionAttribute;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -20,6 +16,8 @@ use Symfony\Component\Validator\Constraint;
  */
 final class ConstraintAttributeProcessor implements ElementAttributeProcessorInterface
 {
+    use SimpleMethodCallGeneratorTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -39,10 +37,8 @@ final class ConstraintAttributeProcessor implements ElementAttributeProcessorInt
     /**
      * {@inheritdoc}
      */
-    public function generateCode(string $name, AttributesProcessorGenerator $generator, ReflectionAttribute $attribute): void
+    private function methodName(): string
     {
-        /** @var class-string<Constraint> $constraint */
-        $constraint = $attribute->getName();
-        $generator->line('$?->satisfy(?);', [$name, $generator->new($constraint, $attribute->getArguments())]);
+        return 'satisfy';
     }
 }

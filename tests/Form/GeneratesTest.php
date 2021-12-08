@@ -105,7 +105,6 @@ class MyForm extends CustomForm
     }
 }
 
-// @todo is repetable
 class OrderForm extends AttributeForm
 {
     #[Positive(message: 'Valeur incorrecte'), Getter, Setter]
