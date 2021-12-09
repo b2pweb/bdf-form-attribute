@@ -137,8 +137,8 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
             {
             }
         });
-        $foo->hydrator(new Setter());
         $foo->extractor(new Getter());
+        $foo->hydrator(new Setter());
 
         $bar = $builder->add('bar', IntegerElement::class);
         $bar->modelTransformer(new class ($form) implements TransformerInterface {
@@ -162,8 +162,8 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
             {
             }
         });
-        $bar->hydrator(new Setter());
         $bar->extractor(new Getter());
+        $bar->hydrator(new Setter());
 
         return $this;
     }

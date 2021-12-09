@@ -86,13 +86,13 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
 
         $a = $builder->add('a', StringElement::class);
         $a->modelTransformer(new ATransformer());
-        $a->hydrator(new Setter());
         $a->extractor(new Getter());
+        $a->hydrator(new Setter());
 
         $b = $builder->add('b', IntegerElement::class);
         $b->modelTransformer(new BTransformer());
-        $b->hydrator(new Setter());
         $b->extractor(new Getter());
+        $b->hydrator(new Setter());
 
         $c = $builder->add('c', StringElement::class);
         $c->modelTransformer(new TransformerWithArguments('foo_'));

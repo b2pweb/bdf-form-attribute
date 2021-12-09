@@ -146,15 +146,15 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
     {
         $bar = $builder->add('bar', IntegerElement::class);
         $bar->satisfy(new NotBlank());
-        $bar->satisfy(new GreaterThan(5));
-        $bar->hydrator(new Setter());
         $bar->extractor(new Getter());
+        $bar->hydrator(new Setter());
+        $bar->satisfy(new GreaterThan(5));
 
 
         $foo = $builder->add('foo', StringElement::class);
         $foo->satisfy(new NotBlank());
-        $foo->hydrator(new Setter());
         $foo->extractor(new Getter());
+        $foo->hydrator(new Setter());
 
         return $this;
     }

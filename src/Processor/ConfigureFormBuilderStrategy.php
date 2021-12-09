@@ -65,14 +65,18 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     {
         $elementBuilder = $builder->add($name, $elementType);
 
-        foreach ($property->getAttributes(ChildBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-            $attribute->newInstance()->applyOnChildBuilder($form, $elementBuilder);
-        }
+        foreach ($property->getAttributes() as $attribute) {
+            $attributeInstance = $attribute->newInstance();
 
-        foreach ($this->elementProcessors as $configurator) {
-            foreach ($property->getAttributes($configurator->type(), ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-                if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
-                    $configurator->process($elementBuilder, $attribute->newInstance());
+            if ($attributeInstance instanceof ChildBuilderAttributeInterface) {
+                /** @var ChildBuilderAttributeInterface $attributeInstance */
+                $attributeInstance->applyOnChildBuilder($form, $elementBuilder);
+                continue;
+            }
+
+            foreach ($this->elementProcessors as $configurator) {
+                if ($attributeInstance instanceof ($configurator->type())) {
+                    $configurator->process($elementBuilder, $attributeInstance);
                 }
             }
         }

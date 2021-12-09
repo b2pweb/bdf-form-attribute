@@ -72,18 +72,18 @@ class MyFormConfigurator implements AttributesProcessorInterface, PostConfigureI
         $builder->generates(Person::class);
 
         $firstName = $builder->add('firstName', StringElement::class);
+        $firstName->satisfy(new NotBlank());
         $firstName->satisfy(new ClosureConstraint([$form, 'validateName']));
         $firstName->hydrator(new Setter(null))->extractor(new Getter(null));
-        $firstName->satisfy(new NotBlank());
 
         $lastName = $builder->add('lastName', StringElement::class);
         $lastName->satisfy(new ClosureConstraint([$form, 'validateName']));
         $lastName->hydrator(new Setter(null))->extractor(new Getter(null));
 
         $age = $builder->add('age', IntegerElement::class);
-        $age->hydrator(new Setter(null))->extractor(new Getter(null));
         $age->satisfy(new Positive());
         $age->satisfy(new LessThan(150));
+        $age->hydrator(new Setter(null))->extractor(new Getter(null));
 
         return $this;
     }
@@ -273,18 +273,18 @@ class ManualConfigurator implements AttributesProcessorInterface, PostConfigureI
         $builder->generates(Person::class);
 
         $firstName = $builder->add('firstName', StringElement::class);
+        $firstName->satisfy(new NotBlank());
         $firstName->satisfy(new ClosureConstraint([$form, 'validateName']));
         $firstName->hydrator(new Setter(null))->extractor(new Getter(null));
-        $firstName->satisfy(new NotBlank());
 
         $lastName = $builder->add('lastName', StringElement::class);
         $lastName->satisfy(new ClosureConstraint([$form, 'validateName']));
         $lastName->hydrator(new Setter(null))->extractor(new Getter(null));
 
         $age = $builder->add('age', IntegerElement::class);
-        $age->hydrator(new Setter(null))->extractor(new Getter(null));
         $age->satisfy(new Positive());
         $age->satisfy(new LessThan(150));
+        $age->hydrator(new Setter(null))->extractor(new Getter(null));
 
         return $this;
     }

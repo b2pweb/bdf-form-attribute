@@ -81,13 +81,16 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
         $elementType = $this->generator->useAndSimplifyType($elementType);
         $this->generator->line('$? = $builder->add(?, ?::class);', [$name, $name, new Literal($elementType)]);
 
-        foreach ($property->getAttributes(ChildBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-            $attribute->newInstance()->generateCodeForChildBuilder($name, $this->generator, $form);
-        }
+        foreach ($property->getAttributes() as $attribute) {
+            if (is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+                /** @var ChildBuilderAttributeInterface $attributeInstance */
+                $attributeInstance = $attribute->newInstance();
+                $attributeInstance->generateCodeForChildBuilder($name, $this->generator, $form);
+                continue;
+            }
 
-        foreach ($this->elementProcessors as $configurator) {
-            foreach ($property->getAttributes($configurator->type(), ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
-                if (!is_subclass_of($attribute->getName(), ChildBuilderAttributeInterface::class)) {
+            foreach ($this->elementProcessors as $configurator) {
+                if (is_subclass_of($attribute->getName(), $configurator->type())) {
                     $configurator->generateCode($name, $this->generator, $attribute);
                 }
             }
