@@ -74,7 +74,7 @@ use Bdf\Form\Aggregate\FormInterface;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use Bdf\Form\Attribute\Processor\PostConfigureInterface;
-use Bdf\Form\Choice\LazzyChoice;
+use Bdf\Form\Choice\LazyChoice;
 use Bdf\Form\Leaf\StringElement;
 
 class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
@@ -91,7 +91,7 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
         $bar->choices(['foo', 'bar', 'baz'], ['min' => 2, 'multipleMessage' => 'my error', 'message' => 'my error']);
 
         $baz = $builder->add('baz', StringElement::class);
-        $baz->choices(new LazzyChoice([$form, 'generateChoices']), []);
+        $baz->choices(new LazyChoice([$form, 'generateChoices']), []);
 
         return $this;
     }

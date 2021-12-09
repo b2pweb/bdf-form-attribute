@@ -13,7 +13,7 @@ use Bdf\Form\Choice\ArrayChoice;
 use Bdf\Form\Choice\Choiceable;
 use Bdf\Form\Choice\ChoiceBuilderTrait;
 use Bdf\Form\Choice\ChoiceInterface;
-use Bdf\Form\Choice\LazzyChoice;
+use Bdf\Form\Choice\LazyChoice;
 use Bdf\Form\ElementBuilderInterface;
 use Bdf\Form\Leaf\StringElementBuilder;
 use Nette\PhpGenerator\Literal;
@@ -63,7 +63,7 @@ use Nette\PhpGenerator\Literal;
  * @see ChoiceBuilderTrait::choices() The called method
  * @see Choiceable Supported element type
  * @see ArrayChoice Used when an array is given as parameter
- * @see LazzyChoice Used when a method name is given as parameter
+ * @see LazyChoice Used when a method name is given as parameter
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Choices implements ChildBuilderAttributeInterface
@@ -114,7 +114,7 @@ final class Choices implements ChildBuilderAttributeInterface
         // Q&D fix for psalm because it does not recognize trait as type
         /** @var StringElementBuilder $builder */
         $builder->choices(
-            is_string($this->choices) ? new LazzyChoice([$form, $this->choices]) : $this->choices,
+            is_string($this->choices) ? new LazyChoice([$form, $this->choices]) : $this->choices,
             $options
         );
     }
@@ -131,8 +131,8 @@ final class Choices implements ChildBuilderAttributeInterface
         }
 
         if (is_string($this->choices)) {
-            $generator->use(LazzyChoice::class);
-            $choices = new Literal('new LazzyChoice([$form, ?])', [$this->choices]);
+            $generator->use(LazyChoice::class);
+            $choices = new Literal('new LazyChoice([$form, ?])', [$this->choices]);
         } else {
             $choices = $this->choices;
         }
