@@ -39,9 +39,11 @@ final class DateFormat implements ChildBuilderAttributeInterface
          * The date format
          *
          * @var non-empty-string
+         * @readonly
+         *
          * @see https://www.php.net/manual/en/datetime.createfromformat.php#refsect1-datetime.createfromformat-parameters For the format
          */
-        public string $format,
+        private string $format,
     ) {
     }
 

@@ -79,21 +79,24 @@ final class Choices implements ChildBuilderAttributeInterface
          * The label is not required.
          *
          * @var literal-string|array
+         * @readonly
          */
-        public string|array $choices,
+        private string|array $choices,
         /**
          * The error message
          * If not provided, a default message will be used
          *
          * @var string|null
+         * @readonly
          */
-        public ?string $message = null,
+        private ?string $message = null,
         /**
          * Extra constraint options
          *
          * @var array
+         * @readonly
          */
-        public array $options = [],
+        private array $options = [],
     ) {
     }
 

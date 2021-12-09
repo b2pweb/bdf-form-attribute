@@ -60,16 +60,18 @@ final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
          * - Return array with error message and code
          *
          * @var literal-string
+         * @readonly
          */
-        public string $methodName,
+        private string $methodName,
         /**
          * The error message to use
          * This option is used only if the validator return false, in other cases,
          * the message returned by the validator will be used
          *
          * @var string|null
+         * @readonly
          */
-        public ?string $message = null,
+        private ?string $message = null,
     ) {
     }
 

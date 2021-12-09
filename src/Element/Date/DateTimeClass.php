@@ -40,8 +40,9 @@ final class DateTimeClass implements ChildBuilderAttributeInterface
          * The datetime class to use
          *
          * @var class-string<\DateTimeInterface>
+         * @readonly
          */
-        public string $className,
+        private string $className,
     ) {
     }
 

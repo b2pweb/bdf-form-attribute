@@ -38,8 +38,9 @@ final class Groups implements ButtonBuilderAttributeInterface
 {
     /**
      * @var list<string>
+     * @readonly
      */
-    public array $groups;
+    private array $groups;
 
     /**
      * @param string ...$groups List of validation groups

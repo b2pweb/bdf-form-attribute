@@ -39,8 +39,9 @@ final class Timezone implements ChildBuilderAttributeInterface
          * The timezone name or offset
          *
          * @var non-empty-string
+         * @readonly
          */
-        public string $timezone,
+        private string $timezone,
     ) {
     }
 

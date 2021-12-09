@@ -40,34 +40,38 @@ final class Csrf implements FormBuilderAttributeInterface
          * The token input name
          *
          * @var non-empty-string
+         * @readonly
          */
-        public string $name = '_token',
+        private string $name = '_token',
         /**
          * The token id
          * By default is value is the class name of `CsrfElement`
          *
          * @var string|null
+         * @readonly
          *
          * @see CsrfTokenManagerInterface::getToken() The parameter tokenId will be used as parameter of this method
          * @see CsrfElementBuilder::tokenId() The called method if defined
          */
-        public ?string $tokenId = null,
+        private ?string $tokenId = null,
         /**
          * The error message to display if the token do not correspond
          *
          * @var string|null
+         * @readonly
          *
          * @see CsrfElementBuilder::message() The called method if defined
          */
-        public ?string $message = null,
+        private ?string $message = null,
         /**
          * Always invalidate the CSRF token after submission
          *
          * @var bool|null
+         * @readonly
          *
          * @see CsrfElementBuilder::invalidate() The called method if defined
          */
-        public ?bool $invalidate = null,
+        private ?bool $invalidate = null,
     ) {
     }
 

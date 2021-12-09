@@ -35,8 +35,9 @@ final class Dependencies implements ChildBuilderAttributeInterface
 {
     /**
      * @var list<string>
+     * @readonly
      */
-    public array $dependencies;
+    private array $dependencies;
 
     /**
      * @param string ...$dependencies List of inputs names

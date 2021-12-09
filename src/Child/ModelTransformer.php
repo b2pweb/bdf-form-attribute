@@ -39,14 +39,16 @@ final class ModelTransformer implements ChildBuilderAttributeInterface
          * The transformer class name
          *
          * @var class-string<TransformerInterface>
+         * @readonly
          */
-        public string $transformerClass,
+        private string $transformerClass,
         /**
          * Arguments to provide on the transformer constructor
          *
          * @var array
+         * @readonly
          */
-        public array $constructorArguments = [],
+        private array $constructorArguments = [],
     ) {
     }
 

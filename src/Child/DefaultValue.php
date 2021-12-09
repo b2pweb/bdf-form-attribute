@@ -35,7 +35,10 @@ use Bdf\Form\Child\ChildBuilderInterface;
 final class DefaultValue implements ChildBuilderAttributeInterface
 {
     public function __construct(
-        public mixed $default
+        /**
+         * @readonly
+         */
+        private mixed $default
     ) {
     }
 

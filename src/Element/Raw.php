@@ -38,8 +38,10 @@ final class Raw implements ChildBuilderAttributeInterface
     public function __construct(
         /**
          * Enable or disable raw mode for parsing numbers
+         *
+         * @readonly
          */
-        public bool $flag = true,
+        private bool $flag = true,
     ) {
     }
 

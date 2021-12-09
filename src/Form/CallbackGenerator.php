@@ -44,8 +44,10 @@ final class CallbackGenerator implements FormBuilderAttributeInterface
          * The method name use for generate the form value
          * This method should be public, and declared on the form class, following the prototype :
          * `public function (FormInterface $form): mixed`
+         *
+         * @readonly
          */
-        public string $callback,
+        private string $callback,
     ) {
     }
 

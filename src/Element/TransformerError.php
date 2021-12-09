@@ -44,12 +44,16 @@ class TransformerError implements ChildBuilderAttributeInterface
     public function __construct(
         /**
          * The error message to show when transformer fail
+         *
+         * @readonly
          */
-        public ?string $message = null,
+        private ?string $message = null,
         /**
          * The error code to provide when transformer fail
+         *
+         * @readonly
          */
-        public ?string $code = null,
+        private ?string $code = null,
         /**
          * Method name to use for validate the transformer exception
          *
@@ -60,8 +64,9 @@ class TransformerError implements ChildBuilderAttributeInterface
          * Else, the method should fill `TransformerExceptionConstraint` with error message and code to provide the custom error
          *
          * @var literal-string|null
+         * @readonly
          */
-        public ?string $validationCallback = null,
+        private ?string $validationCallback = null,
     ) {
     }
 

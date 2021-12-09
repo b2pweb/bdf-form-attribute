@@ -35,8 +35,9 @@ final class Value implements ButtonBuilderAttributeInterface
     public function __construct(
         /**
          * The button HTTP value
+         * @readonly
          */
-        public string $value,
+        private string $value,
     ) {
     }
 

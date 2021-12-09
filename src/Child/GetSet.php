@@ -47,8 +47,10 @@ final class GetSet implements ChildBuilderAttributeInterface
          * (optionally starting with get for the getter, and starting with set for the setter)
          *
          * If not provided, the input name will be used as property name
+         *
+         * @readonly
          */
-        public ?string $propertyName = null,
+        private ?string $propertyName = null,
     ) {
     }
 

@@ -81,20 +81,23 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
          * If defined, the other parameters will be ignored
          *
          * @var literal-string|null
+         * @readonly
          */
-        public ?string $callback = null,
+        private ?string $callback = null,
         /**
          * Method name use to define the transformation process from http value to the input
          *
          * @var literal-string|null
+         * @readonly
          */
-        public ?string $fromHttp = null,
+        private ?string $fromHttp = null,
         /**
          * Method name use to define the transformation process from input value to http format
          *
          * @var literal-string|null
+         * @readonly
          */
-        public ?string $toHttp = null,
+        private ?string $toHttp = null,
     ) {
     }
 
@@ -108,10 +111,11 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
             return;
         }
 
-        $builder->transformer(new class ($form, $this) implements TransformerInterface {
+        $builder->transformer(new class ($form, $this->fromHttp, $this->toHttp) implements TransformerInterface {
             public function __construct(
                 private AttributeForm $form,
-                private CallbackTransformer $attribute,
+                private ?string $fromHttp,
+                private ?string $toHttp,
             ) {
             }
 
@@ -120,11 +124,11 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
              */
             public function transformToHttp($value, ElementInterface $input)
             {
-                if (!$this->attribute->toHttp) {
+                if (!$this->toHttp) {
                     return $value;
                 }
 
-                return $this->form->{$this->attribute->toHttp}($value, $input);
+                return $this->form->{$this->toHttp}($value, $input);
             }
 
             /**
@@ -132,11 +136,11 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
              */
             public function transformFromHttp($value, ElementInterface $input)
             {
-                if (!$this->attribute->fromHttp) {
+                if (!$this->fromHttp) {
                     return $value;
                 }
 
-                return $this->form->{$this->attribute->fromHttp}($value, $input);
+                return $this->form->{$this->fromHttp}($value, $input);
             }
         });
     }

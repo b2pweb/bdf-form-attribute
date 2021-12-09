@@ -20,6 +20,7 @@ abstract class AttributeForm extends CustomForm
      * and for configure the form builder
      *
      * @var AttributesProcessorInterface
+     * @readonly
      */
     private AttributesProcessorInterface $processor;
 

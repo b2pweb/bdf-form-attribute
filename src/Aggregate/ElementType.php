@@ -50,15 +50,17 @@ class ElementType implements ChildBuilderAttributeInterface
          * The form element class name
          *
          * @var class-string<ElementInterface>
+         * @readonly
          */
-        public string $elementType,
+        private string $elementType,
         /**
          * The element configuration method name
          * This method must be defined on the form class, and with public visibility
          *
          * @var literal-string|null
+         * @readonly
          */
-        public ?string $configurator = null
+        private ?string $configurator = null
     ) {
     }
 

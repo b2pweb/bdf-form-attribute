@@ -43,8 +43,10 @@ final class IgnoreTransformerException implements ChildBuilderAttributeInterface
     public function __construct(
         /**
          * Ignore or not transformer errors
+         *
+         * @readonly
          */
-        public bool $ignore = true,
+        private bool $ignore = true,
     ) {
     }
 

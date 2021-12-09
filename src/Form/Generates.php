@@ -41,8 +41,9 @@ final class Generates implements FormBuilderAttributeInterface
          * The entity class name to generate
          *
          * @var class-string
+         * @readonly
          */
-        public string $className,
+        private string $className,
     ) {
     }
 
