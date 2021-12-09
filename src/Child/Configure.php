@@ -29,7 +29,6 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * }
  * </code>
  */
-// @todo date time after et before attributes
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Configure implements ChildBuilderAttributeInterface
 {
