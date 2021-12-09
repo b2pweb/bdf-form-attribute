@@ -95,7 +95,7 @@ class PersonForm extends AttributeForm // The form must extend AttributeForm to 
 
 This library supports various attributes types for configure form elements :
 
-- [Symfony validator](https://github.com/symfony/validator's) `Constraint`, translated as `...->satisfy(new Constraint(...))`
+- [Symfony validator's](https://github.com/symfony/validator) `Constraint`, translated as `...->satisfy(new Constraint(...))`
 - [`ExtractorInterface`](https://github.com/b2pweb/bdf-form/blob/master/src/PropertyAccess/ExtractorInterface.php), translated as `...->extractor(new Extractor(...))`
 - [`HydratorInterface`](https://github.com/b2pweb/bdf-form/blob/master/src/PropertyAccess/HydratorInterface.php), translated as `...->hydrator(new Hydrator(...))`
 - [`FilterInterface`](https://github.com/b2pweb/bdf-form/blob/master/src/Filter/FilterInterface.php), translated as `...->filter(new Filter(...))`
