@@ -28,6 +28,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ChildBuilderInterface::depends() The called method
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]

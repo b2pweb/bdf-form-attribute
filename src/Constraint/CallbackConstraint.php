@@ -37,6 +37,8 @@ use Symfony\Component\Validator\Constraint;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ElementBuilderInterface::satisfy() The called method
  * @see Constraint
  * @see Closure The used constraint

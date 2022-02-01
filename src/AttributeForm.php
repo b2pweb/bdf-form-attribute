@@ -12,6 +12,9 @@ use Bdf\Form\Custom\CustomForm;
 
 /**
  * Utility class for declare a form using PHP 8 attributes and declare elements using typed properties
+ *
+ * @template T
+ * @extends CustomForm<T>
  */
 abstract class AttributeForm extends CustomForm
 {

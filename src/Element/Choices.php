@@ -60,6 +60,8 @@ use Nette\PhpGenerator\Literal;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ChoiceBuilderTrait::choices() The called method
  * @see Choiceable Supported element type
  * @see ArrayChoice Used when an array is given as parameter

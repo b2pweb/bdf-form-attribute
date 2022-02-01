@@ -24,7 +24,7 @@ class CallbackConstraintTest extends TestCase
 
             public function validateFoo($value): bool
             {
-                return strlen($value) % 2 === 0;
+                return strlen((string) $value) % 2 === 0;
             }
         };
 

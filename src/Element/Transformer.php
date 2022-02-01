@@ -31,6 +31,8 @@ use Nette\PhpGenerator\Literal;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ElementBuilderInterface::transformer() The called method
  * @see CallbackTransformer For use custom methods as transformer instead of class
  */

@@ -68,6 +68,8 @@ use Nette\PhpGenerator\PsrPrinter;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ElementBuilderInterface::transformer() The called method
  * @see Transformer For use a transformer class as transformer
  * @see CallbackModelTransformer For use transformer in same way, but for model transformer intead of http one

@@ -29,6 +29,8 @@ use Bdf\Form\PropertyAccess\Setter;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ChildBuilder::getter()
  * @see ChildBuilder::setter()
  * @see ChildBuilderInterface::hydrator()

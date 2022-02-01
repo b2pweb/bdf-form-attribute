@@ -131,12 +131,12 @@ class ATransformer implements TransformerInterface
 {
     public function transformToHttp($value, ElementInterface $input)
     {
-        return base64_decode($value);
+        return base64_decode((string) $value);
     }
 
     public function transformFromHttp($value, ElementInterface $input)
     {
-        return base64_encode($value);
+        return base64_encode((string) $value);
     }
 }
 
@@ -144,12 +144,12 @@ class BTransformer implements TransformerInterface
 {
     public function transformToHttp($value, ElementInterface $input)
     {
-        return hexdec($value);
+        return $value ? hexdec($value) : 0;
     }
 
     public function transformFromHttp($value, ElementInterface $input)
     {
-        return dechex($value);
+        return $value ? dechex($value) : '';
     }
 }
 
@@ -159,12 +159,11 @@ class TransformerWithArguments implements TransformerInterface
 
     public function transformToHttp($value, ElementInterface $input)
     {
-        return substr($value, strlen($this->prefix));
+        return substr($value, strlen((string) $this->prefix));
     }
 
     public function transformFromHttp($value, ElementInterface $input)
     {
         return $this->prefix . $value;
     }
-
 }

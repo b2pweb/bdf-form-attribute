@@ -29,6 +29,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * }
  * </code>
  *
+ * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
  * @see ChildBuilderInterface::default() The called method
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
