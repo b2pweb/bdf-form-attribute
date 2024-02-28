@@ -133,8 +133,9 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
                 return $this->form->t($value, $input);
             }
 
-            public function __construct(private $form)
-            {
+            public function __construct(
+                private $form,
+            ) {
             }
         });
         $foo->extractor(new Getter());
@@ -158,8 +159,9 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
                 return $value;
             }
 
-            public function __construct(private $form)
-            {
+            public function __construct(
+                private $form,
+            ) {
             }
         });
         $bar->extractor(new Getter());

@@ -145,8 +145,9 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
                 return $this->form->inTransformer($value, $input);
             }
 
-            public function __construct(private $form)
-            {
+            public function __construct(
+                private $form,
+            ) {
             }
         });
 

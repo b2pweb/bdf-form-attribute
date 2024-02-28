@@ -72,8 +72,9 @@ implements TransformerInterface {
     {
     }
 
-    public function __construct(private \Bdf\Form\Aggregate\FormInterface $foo)
-    {
+    public function __construct(
+        private \Bdf\Form\Aggregate\FormInterface $foo,
+    ) {
     }
 }
 PHP
