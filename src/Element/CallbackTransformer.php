@@ -73,6 +73,8 @@ use Nette\PhpGenerator\PsrPrinter;
  * @see ElementBuilderInterface::transformer() The called method
  * @see Transformer For use a transformer class as transformer
  * @see CallbackModelTransformer For use transformer in same way, but for model transformer intead of http one
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class CallbackTransformer implements ChildBuilderAttributeInterface
@@ -108,7 +110,7 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
      */
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
-        if ($this->callback) {
+        if ($this->callback !== null) {
             $builder->transformer([$form, $this->callback]);
             return;
         }
@@ -126,7 +128,7 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
              */
             public function transformToHttp($value, ElementInterface $input)
             {
-                if (!$this->toHttp) {
+                if ($this->toHttp === null) {
                     return $value;
                 }
 
@@ -138,7 +140,7 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
              */
             public function transformFromHttp($value, ElementInterface $input)
             {
-                if (!$this->fromHttp) {
+                if ($this->fromHttp === null) {
                     return $value;
                 }
 
@@ -152,7 +154,7 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
      */
     public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
     {
-        if ($this->callback) {
+        if ($this->callback !== null) {
             $generator->line('$?->transformer([$form, ?]);', [$name, $this->callback]);
             return;
         }
@@ -161,13 +163,13 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
 
         $transformer->withPromotedProperty('form')->setPrivate();
 
-        if ($this->toHttp) {
+        if ($this->toHttp !== null) {
             $transformer->toHttp()->setBody('return $this->form->?($value, $input);', [$this->toHttp]);
         } else {
             $transformer->toHttp()->setBody('return $value;');
         }
 
-        if ($this->fromHttp) {
+        if ($this->fromHttp !== null) {
             $transformer->fromHttp()->setBody('return $this->form->?($value, $input);', [$this->fromHttp]);
         } else {
             $transformer->fromHttp()->setBody('return $value;');

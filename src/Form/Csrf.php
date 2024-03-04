@@ -31,6 +31,8 @@ use Bdf\Form\Csrf\CsrfElementBuilder;
  *
  * @see FormBuilderInterface::csrf() The called method
  * @see CsrfElementBuilder
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 final class Csrf implements FormBuilderAttributeInterface

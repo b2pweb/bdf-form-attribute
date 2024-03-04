@@ -42,6 +42,8 @@ use Symfony\Component\Validator\Constraint;
  * @see ArrayConstraint Use for a class constraint
  *
  * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
@@ -82,7 +84,7 @@ final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
     {
         $constraint = new Closure(['callback' => [$form, $this->methodName]]);
 
-        if ($this->message) {
+        if ($this->message !== null) {
             $constraint->message = $this->message;
         }
 
@@ -96,7 +98,7 @@ final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
     {
         $generator->use(Closure::class, 'ClosureConstraint');
 
-        $parameters = $this->message
+        $parameters = $this->message !== null
             ? new Literal("['callback' => [\$form, ?], 'message' => ?]", [$this->methodName, $this->message])
             : new Literal('[$form, ?]', [$this->methodName])
         ;

@@ -32,6 +32,8 @@ use Bdf\Form\RootElementInterface;
  * @see ButtonBuilderInterface::groups() The called method
  * @see ButtonInterface::constraintGroups() Modify this value
  * @see RootElementInterface::constraintGroups()
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Groups implements ButtonBuilderAttributeInterface

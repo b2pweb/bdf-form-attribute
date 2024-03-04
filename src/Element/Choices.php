@@ -66,6 +66,8 @@ use Nette\PhpGenerator\Literal;
  * @see Choiceable Supported element type
  * @see ArrayChoice Used when an array is given as parameter
  * @see LazyChoice Used when a method name is given as parameter
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Choices implements ChildBuilderAttributeInterface
@@ -109,7 +111,7 @@ final class Choices implements ChildBuilderAttributeInterface
     {
         $options = $this->options;
 
-        if ($this->message) {
+        if ($this->message !== null) {
             $options['message'] = $options['multipleMessage'] = $this->message;
         }
 
@@ -128,7 +130,7 @@ final class Choices implements ChildBuilderAttributeInterface
     {
         $options = $this->options;
 
-        if ($this->message) {
+        if ($this->message !== null) {
             $options['message'] = $options['multipleMessage'] = $this->message;
         }
 

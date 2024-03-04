@@ -15,6 +15,8 @@ use Bdf\Form\Custom\CustomForm;
  *
  * @template T
  * @extends CustomForm<T>
+ *
+ * @api
  */
 abstract class AttributeForm extends CustomForm
 {

@@ -38,6 +38,8 @@ use Bdf\Form\PropertyAccess\Setter;
  *
  * @see Getter For define only the extractor
  * @see Setter For define only the hydrator
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class GetSet implements ChildBuilderAttributeInterface

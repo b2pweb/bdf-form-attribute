@@ -28,6 +28,8 @@ use Bdf\Form\Button\ButtonBuilderInterface;
  * </code>
  *
  * @see ButtonBuilderInterface::value() The called method
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Value implements ButtonBuilderAttributeInterface

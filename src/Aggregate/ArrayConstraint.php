@@ -36,6 +36,7 @@ use Symfony\Component\Validator\Constraint;
  * @see CallbackArrayConstraint Use for a custom method validation
  *
  * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class ArrayConstraint implements ChildBuilderAttributeInterface

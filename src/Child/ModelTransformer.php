@@ -32,6 +32,8 @@ use Nette\PhpGenerator\Literal;
  *
  * @see ChildBuilderInterface::modelTransformer() The called method
  * @see CallbackModelTransformer For use custom methods as transformer instead of class
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class ModelTransformer implements ChildBuilderAttributeInterface

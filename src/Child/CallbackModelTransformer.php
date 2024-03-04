@@ -70,6 +70,8 @@ use Nette\PhpGenerator\PsrPrinter;
  * @see ChildBuilderInterface::modelTransformer() The called method
  * @see ModelTransformer For use a transformer class as model transformer
  * @see CallbackTransformer For use transformer in same way, but for http transformer intead of model one
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class CallbackModelTransformer implements ChildBuilderAttributeInterface
@@ -105,7 +107,7 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
      */
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
-        if ($this->callback) {
+        if ($this->callback !== null) {
             $builder->modelTransformer([$form, $this->callback]);
             return;
         }
@@ -123,7 +125,7 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
              */
             public function transformToHttp($value, ElementInterface $input)
             {
-                if (!$this->toInput) {
+                if ($this->toInput === null) {
                     return $value;
                 }
 
@@ -135,7 +137,7 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
              */
             public function transformFromHttp($value, ElementInterface $input)
             {
-                if (!$this->toEntity) {
+                if ($this->toEntity === null) {
                     return $value;
                 }
 
@@ -149,7 +151,7 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
      */
     public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
     {
-        if ($this->callback) {
+        if ($this->callback !== null) {
             $generator->line('$?->modelTransformer([$form, ?]);', [$name, $this->callback]);
             return;
         }
@@ -158,13 +160,13 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
 
         $transformer->withPromotedProperty('form')->setPrivate();
 
-        if ($this->toInput) {
+        if ($this->toInput !== null) {
             $transformer->toHttp()->setBody('return $this->form->?($value, $input);', [$this->toInput]);
         } else {
             $transformer->toHttp()->setBody('return $value;');
         }
 
-        if ($this->toEntity) {
+        if ($this->toEntity !== null) {
             $transformer->fromHttp()->setBody('return $this->form->?($value, $input);', [$this->toEntity]);
         } else {
             $transformer->fromHttp()->setBody('return $value;');

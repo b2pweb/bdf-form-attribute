@@ -36,6 +36,8 @@ use Bdf\Form\Util\ValidatorBuilderTrait;
  * @see ValidatorBuilderTrait::ignoreTransformerException() The called method
  *
  * @implements ChildBuilderAttributeInterface<AbstractElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class IgnoreTransformerException implements ChildBuilderAttributeInterface

@@ -30,6 +30,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * </code>
  *
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Configure implements ChildBuilderAttributeInterface

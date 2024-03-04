@@ -14,6 +14,8 @@ use ReflectionNamedType;
  *
  * The configuration action will be delegated to the ReflectionStrategyInterface
  * This implementation is only responsive of iterate over class hierarchy and properties
+ *
+ * @api
  */
 final class ReflectionProcessor implements AttributesProcessorInterface
 {
@@ -44,7 +46,6 @@ final class ReflectionProcessor implements AttributesProcessorInterface
             $this->strategy->onFormClass($formClass, $form, $builder);
 
             foreach ($formClass->getProperties() as $property) {
-                /** @var non-empty-string $name */
                 $name = $property->getName();
 
                 if (

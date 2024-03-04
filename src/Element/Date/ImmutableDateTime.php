@@ -31,6 +31,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * @see DateTimeClass For use a custom class name
  *
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\Leaf\Date\DateTimeElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class ImmutableDateTime implements ChildBuilderAttributeInterface

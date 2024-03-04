@@ -41,6 +41,8 @@ use Nette\PhpGenerator\Literal;
  * @see ArrayElementBuilder::element() The called method
  *
  * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ElementType implements ChildBuilderAttributeInterface
@@ -69,7 +71,7 @@ class ElementType implements ChildBuilderAttributeInterface
      */
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
-        $configurator = $this->configurator ? [$form, $this->configurator] : null;
+        $configurator = $this->configurator !== null ? [$form, $this->configurator] : null;
         $builder->element($this->elementType, $configurator);
     }
 
@@ -80,7 +82,7 @@ class ElementType implements ChildBuilderAttributeInterface
     {
         $elementType = new Literal($generator->useAndSimplifyType($this->elementType));
 
-        if ($this->configurator) {
+        if ($this->configurator !== null) {
             $generator->line('$?->element(?::class, [$form, ?]);', [$name, $elementType, $this->configurator]);
         } else {
             $generator->line('$?->element(?::class);', [$name, $elementType]);

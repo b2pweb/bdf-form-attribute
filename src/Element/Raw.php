@@ -31,6 +31,8 @@ use Bdf\Form\Leaf\NumberElementBuilder;
  * @see NumberElementBuilder::raw() The called method
  *
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\Leaf\NumberElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Raw implements ChildBuilderAttributeInterface

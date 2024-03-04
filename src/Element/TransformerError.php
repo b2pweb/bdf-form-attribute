@@ -37,6 +37,8 @@ use Bdf\Form\Transformer\TransformerInterface;
  * @see ValidatorBuilderTrait::transformerExceptionValidation() The called method when validationCallback parameter is provided
  *
  * @implements ChildBuilderAttributeInterface<AbstractElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class TransformerError implements ChildBuilderAttributeInterface
@@ -75,15 +77,15 @@ class TransformerError implements ChildBuilderAttributeInterface
      */
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
-        if ($this->message) {
+        if ($this->message !== null) {
             $builder->transformerErrorMessage($this->message);
         }
 
-        if ($this->code) {
+        if ($this->code !== null) {
             $builder->transformerErrorCode($this->code);
         }
 
-        if ($this->validationCallback) {
+        if ($this->validationCallback !== null) {
             $builder->transformerExceptionValidation([$form, $this->validationCallback]);
         }
     }
@@ -95,15 +97,15 @@ class TransformerError implements ChildBuilderAttributeInterface
     {
         $generator->line('$?', [$name]);
 
-        if ($this->message) {
+        if ($this->message !== null) {
             $generator->line('    ->transformerErrorMessage(?)', [$this->message]);
         }
 
-        if ($this->code) {
+        if ($this->code !== null) {
             $generator->line('    ->transformerErrorCode(?)', [$this->code]);
         }
 
-        if ($this->validationCallback) {
+        if ($this->validationCallback !== null) {
             $generator->line('    ->transformerExceptionValidation([$form, ?])', [$this->validationCallback]);
         }
 

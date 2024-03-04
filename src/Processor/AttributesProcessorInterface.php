@@ -7,6 +7,8 @@ use Bdf\Form\Attribute\AttributeForm;
 
 /**
  * Process attributes of the form class to configure the inner form
+ *
+ * @api
  */
 interface AttributesProcessorInterface
 {

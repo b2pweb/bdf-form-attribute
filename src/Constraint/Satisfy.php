@@ -34,6 +34,8 @@ use Symfony\Component\Validator\Constraint;
  *
  * @see ElementBuilderInterface::satisfy() The called method
  * @see Constraint
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Satisfy implements ChildBuilderAttributeInterface

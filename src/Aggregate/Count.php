@@ -34,6 +34,8 @@ use Symfony\Component\Validator\Constraints\Count as CountConstraint;
  *
  * @implements ChildBuilderAttributeInterface<ArrayElementBuilder>
  *
+ * @api
+ *
  * @psalm-suppress PropertyNotSetInConstructor
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]

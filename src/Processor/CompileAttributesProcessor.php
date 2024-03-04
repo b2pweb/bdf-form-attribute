@@ -16,6 +16,8 @@ use LogicException;
  * - Include the processor class file
  * - Instantiate the generated processor
  * - Delegate the form configuration to the generated processor
+ *
+ * @api
  */
 final class CompileAttributesProcessor implements AttributesProcessorInterface
 {
@@ -40,6 +42,8 @@ final class CompileAttributesProcessor implements AttributesProcessorInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @psalm-suppress PossiblyUnusedReturnValue
      */
     public function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): PostConfigureInterface
     {
@@ -47,6 +51,7 @@ final class CompileAttributesProcessor implements AttributesProcessorInterface
         $className = ($this->classNameResolver)($form);
 
         if (!class_exists($className)) {
+            /** @psalm-suppress ArgumentTypeCoercion */
             $this->loadProcessor($className, $form, $builder);
         }
 

@@ -31,6 +31,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
  *
  * @see ChildBuilderInterface::depends() The called method
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class Dependencies implements ChildBuilderAttributeInterface

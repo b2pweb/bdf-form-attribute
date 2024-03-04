@@ -31,6 +31,8 @@ use Nette\PhpGenerator\Literal;
  * @see \Bdf\Form\Leaf\Date\DateTimeElementBuilder::className() The called method
  *
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\Leaf\Date\DateTimeElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class DateTimeClass implements ChildBuilderAttributeInterface

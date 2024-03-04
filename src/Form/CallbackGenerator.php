@@ -35,6 +35,8 @@ use Nette\PhpGenerator\Method;
  * @see FormBuilderInterface::generates() The called method
  * @see ValueGenerator
  * @see Generates For generate with a simple class name
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 final class CallbackGenerator implements FormBuilderAttributeInterface

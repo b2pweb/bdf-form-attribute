@@ -21,7 +21,7 @@ final class AttributesProcessorGenerator extends ClassGenerator
      */
     public function __construct(string $className)
     {
-        if (!$classNamePos = strrpos($className, '\\')) {
+        if (($classNamePos = strrpos($className, '\\')) === false) {
             throw new InvalidArgumentException('The class name must have a namespace');
         }
 

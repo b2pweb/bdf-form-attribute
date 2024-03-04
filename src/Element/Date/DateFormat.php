@@ -30,6 +30,8 @@ use Bdf\Form\Child\ChildBuilderInterface;
  * @see \Bdf\Form\Leaf\Date\DateTimeElementBuilder::format() The called method
  *
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\Leaf\Date\DateTimeElementBuilder>
+ *
+ * @api
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 final class DateFormat implements ChildBuilderAttributeInterface
