@@ -57,7 +57,7 @@ final class AsArrayConstraint implements MethodChildBuilderAttributeInterface
         /**
          * The element property name to which the constraint is applied
          *
-         * @var literal-string
+         * @var non-empty-string
          * @readonly
          */
         private string $target,

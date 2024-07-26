@@ -59,7 +59,7 @@ final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
          * - Return string for a custom error message
          * - Return array with error message and code
          *
-         * @var literal-string
+         * @var non-empty-string
          * @readonly
          */
         private string $methodName,
