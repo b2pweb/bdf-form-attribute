@@ -84,21 +84,21 @@ final class CallbackTransformer implements ChildBuilderAttributeInterface
          * Method name use to define the unified transformer method
          * If defined, the other parameters will be ignored
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $callback = null,
         /**
          * Method name use to define the transformation process from http value to the input
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $fromHttp = null,
         /**
          * Method name use to define the transformation process from input value to http format
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $toHttp = null,

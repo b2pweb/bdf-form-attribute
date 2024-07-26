@@ -42,6 +42,7 @@ use Symfony\Component\Validator\Constraint;
  * @see ElementBuilderInterface::satisfy() The called method
  * @see Constraint
  * @see Closure The used constraint
+ * @see AsConstraint To annotate the method instead of the property
  *
  * @api
  */
@@ -61,7 +62,7 @@ final class CallbackConstraint implements ChildBuilderAttributeInterface
          * - Return string for a custom error message
          * - Return array with error message and code
          *
-         * @var literal-string
+         * @var non-empty-string
          * @readonly
          */
         private string $methodName,

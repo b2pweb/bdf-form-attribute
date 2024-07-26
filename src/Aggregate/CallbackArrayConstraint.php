@@ -7,10 +7,8 @@ use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
-use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Constraint\Closure;
-use Bdf\Form\ElementBuilderInterface;
 use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 

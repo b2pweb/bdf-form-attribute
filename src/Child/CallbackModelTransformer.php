@@ -70,6 +70,7 @@ use Nette\PhpGenerator\PsrPrinter;
  * @see ChildBuilderInterface::modelTransformer() The called method
  * @see ModelTransformer For use a transformer class as model transformer
  * @see CallbackTransformer For use transformer in same way, but for http transformer intead of model one
+ * @see AsModelTransformer To annotate the method instead
  *
  * @api
  */
@@ -81,21 +82,21 @@ final class CallbackModelTransformer implements ChildBuilderAttributeInterface
          * Method name use to define the unified transformer method
          * If defined, the other parameters will be ignored
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $callback = null,
         /**
          * Method name use to define the transformation process from input value to the entity
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $toEntity = null,
         /**
          * Method name use to define the transformation process from entity value to input
          *
-         * @var literal-string|null
+         * @var non-empty-string|null
          * @readonly
          */
         private ?string $toInput = null,
