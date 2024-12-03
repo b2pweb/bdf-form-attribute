@@ -75,4 +75,4 @@ jobs:
     - name: Run Infection
       run: |
         git fetch --depth=1 origin $GITHUB_BASE_REF
-        ./infection.phar --logger-github --git-diff-filter=AM
+        XDEBUG_MODE=coverage ./infection.phar --logger-github --git-diff-filter=AM
