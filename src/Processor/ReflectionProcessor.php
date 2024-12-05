@@ -6,7 +6,9 @@ use Bdf\Form\Aggregate\FormBuilderInterface;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\ElementInterface;
+use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionNamedType;
 
 /**
@@ -39,11 +41,13 @@ final class ReflectionProcessor implements AttributesProcessorInterface
      */
     public function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
     {
-        $elementProperties = [];
-        $buttonProperties = [];
+        $metadata = new ProcessorMetadata();
+
+        // First iterate over methods to build the metadata
+        $this->registerMethodsMetadata($form, $metadata);
 
         foreach ($this->iterateClassHierarchy($form) as $formClass) {
-            $this->strategy->onFormClass($formClass, $form, $builder);
+            $this->strategy->onFormClass($formClass, $form, $builder, $metadata);
 
             foreach ($formClass->getProperties() as $property) {
                 $name = $property->getName();
@@ -51,8 +55,7 @@ final class ReflectionProcessor implements AttributesProcessorInterface
                 if (
                     !$property->hasType()
                     || !$property->getType() instanceof ReflectionNamedType
-                    || isset($elementProperties[$name])
-                    || isset($buttonProperties[$name])
+                    || $metadata->hasProperty($name)
                 ) {
                     continue;
                 }
@@ -61,16 +64,16 @@ final class ReflectionProcessor implements AttributesProcessorInterface
                 $property->setAccessible(true);
 
                 if ($elementType === ButtonInterface::class) {
-                    $buttonProperties[$name] = $property;
-                    $this->strategy->onButtonProperty($property, $name, $form, $builder);
+                    $metadata->addButtonProperty($name, $property);
+                    $this->strategy->onButtonProperty($property, $name, $form, $builder, $metadata);
                 } elseif (is_subclass_of($elementType, ElementInterface::class)) {
-                    $elementProperties[$name] = $property;
-                    $this->strategy->onElementProperty($property, $name, $elementType, $form, $builder);
+                    $metadata->addElementProperty($name, $property);
+                    $this->strategy->onElementProperty($property, $name, $elementType, $form, $builder, $metadata);
                 }
             }
         }
 
-        return $this->strategy->onPostConfigure($elementProperties, $buttonProperties, $form);
+        return $this->strategy->onPostConfigure($metadata, $form);
     }
 
     /**
@@ -87,6 +90,28 @@ final class ReflectionProcessor implements AttributesProcessorInterface
     {
         for ($reflection = new ReflectionClass($form); $reflection->getName() !== AttributeForm::class; $reflection = $reflection->getParentClass()) {
             yield $reflection;
+        }
+    }
+
+    /**
+     * Fill the metadata from methods attributes
+     *
+     * @param AttributeForm $form
+     * @param ProcessorMetadata $metadata
+     *
+     * @return void
+     */
+    private function registerMethodsMetadata(AttributeForm $form, ProcessorMetadata $metadata): void
+    {
+        foreach ((new ReflectionClass($form))->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            foreach ($method->getAttributes(MethodChildBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                /** @var MethodChildBuilderAttributeInterface $attributeInstance */
+                $attributeInstance = $attribute->newInstance();
+
+                foreach ($attributeInstance->targetElements() as $target) {
+                    $metadata->addChildAttribute($target, $attributeInstance->attribute($method));
+                }
+            }
         }
     }
 }

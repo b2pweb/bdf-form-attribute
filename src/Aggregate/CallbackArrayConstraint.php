@@ -7,10 +7,8 @@ use Bdf\Form\Aggregate\ArrayElementBuilder;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
-use Bdf\Form\Attribute\Processor\GenerateConfiguratorStrategy;
 use Bdf\Form\Child\ChildBuilderInterface;
 use Bdf\Form\Constraint\Closure;
-use Bdf\Form\ElementBuilderInterface;
 use Nette\PhpGenerator\Literal;
 use Symfony\Component\Validator\Constraint;
 
@@ -61,7 +59,7 @@ final class CallbackArrayConstraint implements ChildBuilderAttributeInterface
          * - Return string for a custom error message
          * - Return array with error message and code
          *
-         * @var literal-string
+         * @var non-empty-string
          * @readonly
          */
         private string $methodName,

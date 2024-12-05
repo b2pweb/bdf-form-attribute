@@ -21,6 +21,10 @@
   <testsuites>
     <testsuite name="All Test Suite">
       <directory suffix="Test.php">./tests</directory>
+      <exclude>./tests/Php81</exclude>
+    </testsuite>
+    <testsuite name="PHP compatibility">
+      <directory suffix="Test.php" phpVersion="8.1">./tests/Php81</directory>
     </testsuite>
   </testsuites>
 </phpunit>
