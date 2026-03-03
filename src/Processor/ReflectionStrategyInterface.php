@@ -25,10 +25,11 @@ interface ReflectionStrategyInterface
      * @param ReflectionClass<AttributeForm> $formClass Form class to use
      * @param AttributeForm $form The current form instance
      * @param FormBuilderInterface $builder Builder to configure
+     * @param ProcessorMetadata $metadata Metadata for the current form
      *
      * @return void
      */
-    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder): void;
+    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void;
 
     /**
      * Configure a button following the declared property
@@ -39,10 +40,11 @@ interface ReflectionStrategyInterface
      * @param non-empty-string $name The button name
      * @param AttributeForm $form The current form instance
      * @param FormBuilderInterface $builder Builder to configure
+     * @param ProcessorMetadata $metadata Metadata for the current form
      *
      * @return void
      */
-    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder): void;
+    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void;
 
     /**
      * Configure an element following the declared property
@@ -54,16 +56,17 @@ interface ReflectionStrategyInterface
      * @param class-string<ElementInterface> $elementType The element type (i.e. the property type)
      * @param AttributeForm $form The current form instance
      * @param FormBuilderInterface $builder Builder to configure
+     * @param ProcessorMetadata $metadata Metadata for the current form
      *
      * @return void
      */
-    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder): void;
+    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void;
 
     /**
-     * @param array<non-empty-string, ReflectionProperty> $elementProperties
-     * @param array<non-empty-string, ReflectionProperty> $buttonProperties
-     * @param AttributeForm $form
+     * @param ProcessorMetadata $metadata Metadata for the current form
+     * @param AttributeForm $form The current form instance
+     *
      * @return PostConfigureInterface|null
      */
-    public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface;
+    public function onPostConfigure(ProcessorMetadata $metadata, AttributeForm $form): ?PostConfigureInterface;
 }

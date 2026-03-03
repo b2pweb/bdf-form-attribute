@@ -4,6 +4,7 @@ namespace Tests\Form\Attribute;
 
 use Attribute;
 use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Element\AsTransformer;
 use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
 use Bdf\Form\Button\ButtonInterface;
 use Bdf\Form\Button\SubmitButton;
@@ -150,7 +151,6 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
         $bar->hydrator(new Setter());
         $bar->satisfy(new GreaterThan(5));
 
-
         $foo = $builder->add('foo', StringElement::class);
         $foo->satisfy(new NotBlank());
         $foo->extractor(new Getter());
@@ -176,6 +176,70 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
 PHP
         , $form
 );
+    }
+
+    /**
+     *
+     */
+    public function test_inheritance_code_generator_with_method()
+    {
+        $form = new ChildFormWithMethod();
+
+        $this->assertGenerated(<<<'PHP'
+namespace Generated;
+
+use Bdf\Form\Aggregate\FormBuilderInterface;
+use Bdf\Form\Aggregate\FormInterface;
+use Bdf\Form\Attribute\AttributeForm;
+use Bdf\Form\Attribute\Processor\AttributesProcessorInterface;
+use Bdf\Form\Attribute\Processor\PostConfigureInterface;
+use Bdf\Form\Leaf\IntegerElement;
+use Bdf\Form\Leaf\StringElement;
+use Bdf\Form\PropertyAccess\Getter;
+use Bdf\Form\PropertyAccess\Setter;
+use Symfony\Component\Validator\Constraints\GreaterThan;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Tests\Form\Attribute\BaseFormWithMethod;
+use Tests\Form\Attribute\ChildFormWithMethod;
+
+class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigureInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    function configureBuilder(AttributeForm $form, FormBuilderInterface $builder): ?PostConfigureInterface
+    {
+        $bar = $builder->add('bar', IntegerElement::class);
+        $bar->satisfy(new NotBlank());
+        $bar->extractor(new Getter());
+        $bar->hydrator(new Setter());
+        $bar->satisfy(new GreaterThan(5));
+
+        $foo = $builder->add('foo', StringElement::class);
+        $foo->extractor(new Getter());
+        $foo->hydrator(new Setter());
+        $foo->transformer([$form, 'transform']);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function postConfigure(AttributeForm $form, FormInterface $inner): void
+    {
+        (\Closure::bind(function () use ($inner, $form) {
+            $form->bar = $inner['bar']->element();
+        }, null, ChildFormWithMethod::class))();
+        (\Closure::bind(function () use ($inner, $form) {
+            $form->foo = $inner['foo']->element();
+        }, null, BaseFormWithMethod::class))();
+    }
+}
+
+PHP
+            , $form
+        );
     }
 
     /**
@@ -260,4 +324,22 @@ class MyTransformer implements TransformerInterface
     {
         return base64_encode($value);
     }
+}
+
+class BaseFormWithMethod extends AttributeForm
+{
+    #[Getter, Setter]
+    private StringElement $foo;
+
+    #[AsTransformer('foo')]
+    public function transform(string $value): string
+    {
+        return str_rot13($value);
+    }
+}
+
+class ChildFormWithMethod extends BaseFormWithMethod
+{
+    #[NotBlank, Getter, Setter, GreaterThan(5)]
+    private IntegerElement $bar;
 }

@@ -39,7 +39,7 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
         foreach ($formClass->getAttributes(FormBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $attribute->newInstance()->applyOnFormBuilder($form, $builder);
@@ -49,7 +49,7 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
         $submitBuilder = $builder->submit($name);
 
@@ -61,7 +61,7 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
         $elementBuilder = $builder->add($name, $elementType);
 
@@ -80,14 +80,18 @@ final class ConfigureFormBuilderStrategy implements ReflectionStrategyInterface
                 }
             }
         }
+
+        foreach ($metadata->registeredChildAttributes($name) as $attribute) {
+            $attribute->applyOnChildBuilder($form, $elementBuilder);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface
+    public function onPostConfigure(ProcessorMetadata $metadata, AttributeForm $form): ?PostConfigureInterface
     {
-        return new PostConfigureReflectionSetProperties($elementProperties, $buttonProperties);
+        return new PostConfigureReflectionSetProperties($metadata->elementProperties(), $metadata->buttonProperties());
     }
 
     /**

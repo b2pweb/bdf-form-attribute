@@ -50,19 +50,24 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onFormClass(ReflectionClass $formClass, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
+        $empty = true;
+
         foreach ($formClass->getAttributes(FormBuilderAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
             $attribute->newInstance()->generateCodeForFormBuilder($this->generator, $form);
+            $empty = false;
         }
 
-        $this->generator->line();
+        if (!$empty) {
+            $this->generator->line();
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onButtonProperty(ReflectionProperty $property, string $name, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
         $this->generator->line('$builder->submit(?)', [$name]);
 
@@ -76,7 +81,7 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder): void
+    public function onElementProperty(ReflectionProperty $property, string $name, string $elementType, AttributeForm $form, FormBuilderInterface $builder, ProcessorMetadata $metadata): void
     {
         $elementType = $this->generator->useAndSimplifyType($elementType);
         $this->generator->line('$? = $builder->add(?, ?::class);', [$name, $name, new Literal($elementType)]);
@@ -96,13 +101,17 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
             }
         }
 
+        foreach ($metadata->registeredChildAttributes($name) as $attribute) {
+            $attribute->generateCodeForChildBuilder($name, $this->generator, $form);
+        }
+
         $this->generator->line(); // Add empty line
     }
 
     /**
      * {@inheritdoc}
      */
-    public function onPostConfigure(array $elementProperties, array $buttonProperties, AttributeForm $form): ?PostConfigureInterface
+    public function onPostConfigure(ProcessorMetadata $metadata, AttributeForm $form): ?PostConfigureInterface
     {
         $this->generator->line('return $this;');
 
@@ -110,6 +119,9 @@ final class GenerateConfiguratorStrategy implements ReflectionStrategyInterface
             ->implements(PostConfigureInterface::class)
             ->implementsMethod(PostConfigureInterface::class, 'postConfigure')
         ;
+
+        $elementProperties = $metadata->elementProperties();
+        $buttonProperties = $metadata->buttonProperties();
 
         if (!empty($buttonProperties)) {
             $method->addBody('$root = $form->root();');

@@ -3,6 +3,8 @@
 namespace Bdf\Form\Attribute\Element;
 
 use Attribute;
+use Bdf\Form\Aggregate\ArrayElementBuilder;
+use Bdf\Form\Attribute\Aggregate\ArrayTransformer;
 use Bdf\Form\Attribute\AttributeForm;
 use Bdf\Form\Attribute\ChildBuilderAttributeInterface;
 use Bdf\Form\Attribute\Processor\CodeGenerator\AttributesProcessorGenerator;
@@ -34,6 +36,7 @@ use Nette\PhpGenerator\Literal;
  * @implements ChildBuilderAttributeInterface<\Bdf\Form\ElementBuilderInterface>
  *
  * @see ElementBuilderInterface::transformer() The called method
+ * @see ArrayElementBuilder::arrayTransformer() The called method if array flag is set
  * @see CallbackTransformer For use custom methods as transformer instead of class
  *
  * @api
@@ -56,6 +59,20 @@ class Transformer implements ChildBuilderAttributeInterface
          * @readonly
          */
         private array $constructorArguments = [],
+        /**
+         * Apply the transformer on the whole array element
+         * instead of each element
+         *
+         * If set to true, {@see ArrayElementBuilder::arrayTransformer()} will be used
+         *
+         * Note: this flag can be used only on array element
+         *
+         * @var bool
+         * @readonly
+         *
+         * @see ArrayTransformer Prefer use this attribute for array element, instead of manually set this flag
+         */
+        private bool $array = false,
     ) {
     }
 
@@ -64,7 +81,14 @@ class Transformer implements ChildBuilderAttributeInterface
      */
     public function applyOnChildBuilder(AttributeForm $form, ChildBuilderInterface $builder): void
     {
-        $builder->transformer(new $this->transformerClass(...$this->constructorArguments));
+        $transformer = new $this->transformerClass(...$this->constructorArguments);
+
+        if ($this->array) {
+            /** @var ChildBuilderInterface<ArrayElementBuilder> $builder */
+            $builder->arrayTransformer($transformer);
+        } else {
+            $builder->transformer($transformer);
+        }
     }
 
     /**
@@ -73,6 +97,8 @@ class Transformer implements ChildBuilderAttributeInterface
     public function generateCodeForChildBuilder(string $name, AttributesProcessorGenerator $generator, AttributeForm $form): void
     {
         $transformer = $generator->useAndSimplifyType($this->transformerClass);
-        $generator->line('$?->transformer(new ?(...?));', [$name, new Literal($transformer), $this->constructorArguments]);
+        $code = $this->array ? '$?->arrayTransformer(new ?(...?));' : '$?->transformer(new ?(...?));';
+
+        $generator->line($code, [$name, new Literal($transformer), $this->constructorArguments]);
     }
 }

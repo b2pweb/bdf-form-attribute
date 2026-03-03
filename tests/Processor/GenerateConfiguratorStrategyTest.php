@@ -208,12 +208,10 @@ class GeneratedConfigurator implements AttributesProcessorInterface, PostConfigu
     {
         $d = $builder->add('d', StringElement::class);
 
-
         $builder->submit('b')
         ;
 
         $c = $builder->add('c', StringElement::class);
-
 
         $a = $builder->add('a', StringElement::class);
 
