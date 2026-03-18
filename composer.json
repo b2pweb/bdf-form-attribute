@@ -12,12 +12,12 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Bdf\\Form\\Attribute\\": "src"
+            "Bdf\\Form\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Form\\Attribute\\": "tests"
+            "Tests\\Form\\": "tests"
         }
     },
     "minimum-stability": "dev",
